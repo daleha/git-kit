@@ -1,0 +1,2 @@
+http://www.samba.org/~jelmer/dulwich/ # - pure python git impl
+

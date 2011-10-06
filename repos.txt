@@ -1,0 +1,18 @@
+
+
+
+default repos:
+ro ->git://... http:// (build url)
+rw ->ssh GITUSER@HOST[:|/]URI=[user/project]
+
+
+(have default clone repos optimized for speed)
+
+
+project list here
+->getbirch (submodules)
+->birchdev  (submodules)
+->>>oligomaker3, doc, etc...
+->biolegato (submodules)
+
+
