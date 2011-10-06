@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+
+#make a check for python verion
+#need to cleanup threads, can't quick restart
 '''
 Created on Jun 14, 2010
 
@@ -18,25 +22,60 @@ import tarfile
 from subprocess import *
 
 #custom lib imports
+
 from setup import setup
+
 from lib import shutdown
 from lib import print_console
+from lib import warn
+from lib import abort
+from workflow import *
+from gitlib import *
+
+ACTIONS=("help","sync","userconf")
+
+def printHelp():
+	print(ACTIONS)
 
 def parse_argdict():
+	args=sys.argv
 	#(split sys.argv to git arguments, map keys (switches) to values)
-	pass
+	request=list()
+	name=inspect.getfile( inspect.currentframe() )
+	base=args.index(name)
+	if (len(args)<=base+1):
+		abort("Not enough arguments. No help yet, sorry")
+	else:
+		action=args[base+1]
+		request.append(action)
 
-def main():
-	setup()
+	return request
+			
+def main(request):
+	
+	#todo: add config check for default config options	
+	if (len(request)!=0):
+		action=request[0]
+		if(action=="userconf"):
+			setup()
+		elif(action=="sync"):
+			#synch should actually call gitSynch, testing for now
+			syncBranch(brname="master")
+		elif(action=="help"):
+			printHelp()
+			
+	else:
+		abort("Nothing to do")
+	
 
-def init(argdict):
+def init(request):
 	verbose=False#read from dict
 
 	try:
 		if (verbose):
 			start = time.time()
 
-		main()
+		main(request)
 		
 		if (verbose):
 
@@ -45,20 +84,14 @@ def init(argdict):
 			min = elapsed/60
 			print_console("git command took "+str(min)+" minutes.")
 
-#		JOptionPane.showMessageDialog(None,"Please bookmark BIRCH custom documentation, which will appear in a web browser")
 #		showCustomDoc()
-#		JOptionPane.showMessageDialog(None,"Installation completed successfully.")
 
 	except:
 		
-	#	print_console(err)
 		err=traceback.format_exc()
 		print_console(err)
-		#ARGS.log_file.flush()
-		#ARGS.log_file.close()
 		#from bugmail import send_bug
 		#send_bug()
-	#	JOptionPane.showMessageDialog(None,"Installation failed, please try again and submit install log as a bug report.")
 
 	finally:
 		shutdown()
@@ -66,4 +99,4 @@ def init(argdict):
 
 
 if __name__ == "__main__":
-	sys.exit(init(parse_argdict()))
+	init(parse_argdict())

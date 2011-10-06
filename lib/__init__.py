@@ -21,14 +21,21 @@ except ImportError:
 
 
 #import javax.swing.JOptionPane as JOptionPane
-global LOG
+LOG=None
+LOGPATH=".gitlog.txt"
 ON_POSIX = 'posix' in sys.builtin_module_names
 
 LASTMSG=""
 PROGRAM="git-kit"
 
-def createLog(path=".gitlog.txt"):
-	LOG=open(path,"a")
+def log_flush():
+	global LOG
+	LOG.flush()
+
+
+def createLog():
+	global LOG
+	LOG=open(LOGPATH,"a")
 
 def guessUsername():
 	return getpass.getuser()
@@ -69,6 +76,29 @@ def prompt_user(message,isbool=True,opts=list()):
 		
 	
 	
+def warn(msg):
+	print_console("Warning: "+msg)
+def abort(msg):
+
+	print_console("Aborting: "+msg)
+	shutdown()
+	
+def bail(msg):
+	print_console("Bailing out for safety. Please submit a log (default is .gitlog in cwd) to hameld@cc.umanitoba.ca")
+	shutdown()
+
+def print_console(line):
+	if line==None:
+		return
+	line=line.strip().replace("//","/")
+	line=PROGRAM+" "+line
+	#CONSOLE.writeLine(line)
+	
+	if (line!="" and LOG!=None):
+		LOG.write(line+"\n")
+		LOG.flush()
+	print(line)
+	
 
 """
 A wrapper function to print a label for a log section.
@@ -78,6 +108,19 @@ def print_label(label):
 	string=rad*"*"+label+":"+rad*"*"
 	print_console(string)	
 
+def simple_exec(command):
+
+	proc = Popen(command,shell=True, stdout=PIPE,stderr=PIPE, bufsize=-1, close_fds=ON_POSIX)
+
+	output=list()
+	
+	for line in proc.stdout:
+		output.append(line)
+	for line in proc.stderr:
+		output.append(line)
+
+	return output
+		
 """
 stream_exec executes the command "command" using subprocess.Popen, setting
 the cwd for execution to "path". If "callback" is set to a function pointer, 
@@ -91,7 +134,7 @@ filesystem calls on Windows, which is why this method was created.
 """
 def stream_exec(command,path=None,verbose=True,callback=None):
 
-
+	outlines=list()
 	def enqueue_output(out, queue):
 		for line in iter(out.readline, ''):
 			queue.put(line)
@@ -111,7 +154,7 @@ def stream_exec(command,path=None,verbose=True,callback=None):
 		os.chdir(path)
 
 
-	proc = Popen(command,shell=True, stdout=PIPE, bufsize=-1, close_fds=ON_POSIX)
+	proc = Popen(command,shell=True, stdout=PIPE,stderr=PIPE, bufsize=-1, close_fds=ON_POSIX)
 	print_console("Dispatched command \""+command+"\"")
 	q = Queue()
 	t = Thread(target=enqueue_output, args=(proc.stdout, q))
@@ -122,13 +165,15 @@ def stream_exec(command,path=None,verbose=True,callback=None):
 	while (proc.poll()==None):
 		line=read_output()
 		if (line!=None):
+			outlines.append(line)
 			if (verbose):
 				print_console(line)
 			if (callback!=None):
 				callback()
 			output=output+line
 	os.chdir(cwd)
-	return output
+	print proc.stderr.read()
+	return outlines
 
 
 """
@@ -189,15 +234,15 @@ def shutdown():
 		print_console(err.message)
 		err=traceback.format_exc()
 		print_console(err)
+	sys.exit()
 	#CONSOLE.shutdown()
 	
 	
 def cleanup():
-
+	global LOG
 	if (LOG!=None):
 		LOG.flush()
 		LOG.close()
-
 
 
 def print_console(line):
