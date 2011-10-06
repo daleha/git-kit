@@ -96,7 +96,7 @@ def syncBranch(brname,remotes=list(),greedy=True):
 		if(greedy==True):
 			gitCommitAll("Incremental commit")
 
-		gitPush(brname,remote)	
+		gitPush(brname,remote[1])	
 
 	
 			
