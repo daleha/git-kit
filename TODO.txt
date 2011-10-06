@@ -7,3 +7,11 @@ Good start.
 The script can at least push itself up to github
 
 Seems to be doubling everything though... weird
+
+Wishlist:
+
+-syncing with u of m SVN mirrors (dcommit)
+-remote fallbacks (prioritize)
+-netbeans wrapping
+-add hooks to each project (get hook repo)
+-metastore merge in
