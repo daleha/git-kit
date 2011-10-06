@@ -1,0 +1,9 @@
+Basic pushing is working. Still need to write and connect some more plumbing, read from repos file, and configure it sync all branches.
+
+Need more command line switches working.
+
+Good start.
+
+The script can at least push itself up to github
+
+Seems to be doubling everything though... weird
