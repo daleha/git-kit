@@ -1,3 +1,6 @@
+#system imports
+import os
+
 from lib import prompt_user
 from lib import print_console 
 
@@ -21,10 +24,21 @@ def setup_gitconfig():
 		username=prompt_user("Please enter your name",False)
 	else:
 		username=guessUsername()
+
+	isRoot=prompt_user("Is "+os.getcwd()+" the root directory of this Git repository?")
+	if(not isRoot):
+		root=prompt_user("Please enter the path to the root directory of this repository.")
+		while (not (os.path.lexists(root) and os.path.lexists(root+"/.git"))):
+			root=prompt_user("Please enter a valid POSIX compliant path. To the root directory")
+	
+	else:
+		root=os.getcwd()			
+	writeConfig("alias.root", root)
 	writeConfig("user.name",username) 
 	writeConfig("user.email",prompt_user("What is your email?",isbool=False))
 	writeConfig("branch.master.remote","origin")
 	writeConfig("branch.master.merge","refs/heads/master")
+	writeConfig
 
 	aliases=prompt_user("Would you like to use default aliases?")
 	if(aliases==True):

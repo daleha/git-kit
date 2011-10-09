@@ -1,3 +1,6 @@
+#system includes
+import os
+
 import lib
 from lib import warn
 from lib import abort
@@ -6,9 +9,19 @@ from lib import stream_exec
 from lib import simple_exec
 
 def gitCommitAll(msg="Incremental Comitt"):
-	cmd="git add . && git commit -a -m '"+msg+"'"
-	simple_exec(cmd)
-	
+	cmd="git add "+getGitRoot()+" && git commit -a -m \""+msg+"\""
+	stream_exec(cmd)
+
+def gitCommitOneFile(fileToAdd,msg="Single file commit"):
+	gitStashPush()
+	cmd="git checkout stash@{0} -- "+fileToAdd	
+	stream_exec(cmd)
+	if(not os.path.lexists(fileToAdd)):
+		abort("Cannot add file \""+fileToAdd+"\" does not exist")
+	gitAdd(fileToAdd)
+	cmd="git commit -m '"+msg+"'"
+	print(stream_exec(cmd))
+	gitStashPop()
 
 def destroy(path):
 	cmd= "git filter-branch --tree-filter 'rm -rf "+path+"' HEAD"
@@ -32,6 +45,13 @@ def gitStashPop():
 
 def addRemote(remote=list()):
 	cmd="git remote add "+remote[0]+" "+remote[1]
+	stream_exec(cmd)
+
+def gitRemove(filePath):
+	if(not os.path.lexists(filePath)):
+		abort("Cannot remove file \""+filePath+"\" does not exist")
+
+	cmd="git rm -rf "+filePath
 	stream_exec(cmd)
 
 def readRemotes():
@@ -83,14 +103,69 @@ def gitAdd(path):
 def createRepo():
 	
 	print_console("Creating a new git repository in "+workdir)
-	cmd="git init && git add ."
+	cmd="git init "
 	stream_exec(cmd)	
 
 	if(len(contents)!=0 ):
 		log_flush()
 		gitAdd(lib.LOG)
 
-	cmd="git commit -a -m 'initialized git repository. Congratulations!'"
+	gitCommitAll('initialized git repository. Congratulations!')
 	stream_exec(cmd)
+
+def getGitRoot():
+	cmd="git config --get alias.root"
+	output =os.popen(cmd).read().strip()
+	print_console("Read git root as "+output)
+
+	if(not(os.path.lexists(output))):
+		abort("Getting git root failed")
+
+	return output
+
+def writeGitIgnore(line):
+	ignorepath=getGitRoot()+"/.gitignore"
+	gitignore=open(ignorepath,"a")
+	gitignore.write(line+"\n")
+	gitignore.flush()
+	gitignore.close()
+	gitCommitOneFile(ignorepath)
+
+def ignoreExpression(expression):
+	
+	from lib import prompt_user
+	import fnmatch
+	matches=list()
+
+ 
+	rootPath = getGitRoot()
+	if(not os.path.isfile(expression)): 
+		for root, dirs, files in os.walk(rootPath):
+			for filename in files:
+				#print filename
+				if(fnmatch.fnmatch(filename, expression)):
+				#	print ('match'+filename)
+					matches.append(os.path.join(root, filename))
+	else:
+		matches.append(expression)#probably need to doctor the syntax here
+	
+	print_console("The following files match the expression:")	
+
+	print(matches)	
+	ignore=prompt_user("Would you like to ignore all of these files?")
+	
+	if(ignore):
+		writeGitIgnore(expression)		
+		cmd="git update-index --assume-unchanged"
+		stream_exec(cmd)
+		delete=prompt_user("Would you like to delete all of these files?\n"+str(matches))
+		
+	else:
+		delete=False
+
+	if(delete):
+		for each in matches:
+			gitRemove(each)				
+		gitCommitAll("Removed the files globbed by previous commit's .gitignore")
 
 

@@ -46,8 +46,7 @@ def parse_argdict():
 	if (len(args)<=base+1):
 		abort("Not enough arguments. No help yet, sorry")
 	else:
-		action=args[base+1]
-		request.append(action)
+		request=args[base+1:]
 
 	return request
 			
@@ -56,6 +55,13 @@ def main(request):
 	#todo: add config check for default config options	
 	if (len(request)!=0):
 		action=request[0]
+		try:
+			arg1=request[1]
+			args=request[1:]
+		except:
+			arg1=str()
+			args=list()
+
 		if(action=="userconf"):
 			setup()
 		elif(action=="sync"):
@@ -63,6 +69,9 @@ def main(request):
 			syncBranch(brname="master")
 		elif(action=="help"):
 			printHelp()
+		elif(action=="ignore"):
+			ignoreExpression(arg1)
+			
 			
 	else:
 		abort("Nothing to do")
