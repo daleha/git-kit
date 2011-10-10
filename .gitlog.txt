@@ -1,9 +1,7 @@
 git-kit Created log with open mode "w"
 git-kit Dispatched command "git branch -v"
-git-kit * master 48e9402 Incremental commit
 git-kit 
-git-kit Local branch master exists
-git-kit Branch master exists synching with remotes
+git-kit Branch master does not exist, synching from remotes
 git-kit ['origin\tgit@github.com:daleha/git-kit.git (fetch)\n', 'origin\tgit@github.com:daleha/git-kit.git (push)\n']
 git-kit [('origin', 'git@github.com:daleha/git-kit.git'), ('origin', 'git@github.com:daleha/git-kit.git')]
 git-kit ['origin\tgit@github.com:daleha/git-kit.git (fetch)\n', 'origin\tgit@github.com:daleha/git-kit.git (push)\n']
