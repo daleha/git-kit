@@ -35,10 +35,10 @@ def log_flush():
 
 def createLog():
 	global LOG
-	if(os.path.isfile(os.getcwd()+"/"+LOGPATH)):
-		openmode="a"
-	else:
-		openmode="w"
+#	if(os.path.isfile(os.getcwd()+"/"+LOGPATH)):
+#		openmode="a"
+#	else:
+	openmode="w"
 		
 	LOG=open(LOGPATH,openmode)
 	print_console("Created log with open mode \""+openmode+"\"")
