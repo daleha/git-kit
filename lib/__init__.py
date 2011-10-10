@@ -35,7 +35,14 @@ def log_flush():
 
 def createLog():
 	global LOG
-	LOG=open(LOGPATH,"a")
+	if(os.path.isfile(os.getcwd()+"/"+LOGPATH)):
+		openmode="a"
+	else:
+		openmode="w"
+		
+	LOG=open(LOGPATH,openmode)
+	print_console("Created log with open mode \""+openmode+"\"")
+		
 
 def guessUsername():
 	return getpass.getuser()
