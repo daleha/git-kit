@@ -118,6 +118,7 @@ def print_label(label):
 
 #hack attack...
 def fallback_exec(cmd):
+	warn("Using fallback exec!")
 	output=os.popen(cmd).read().split("\n")
 	outcat="\n".join(output)
 	print_console(outcat)

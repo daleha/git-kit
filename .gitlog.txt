@@ -1,7 +1,9 @@
 git-kit Created log with open mode "w"
-git-kit * master 76326cf Incremental commit
+git-kit Warning: Using fallback exec!
+git-kit * master 88686a6 Incremental commit
 git-kit Local branch master exists
 git-kit Branch master exists synching with remotes
+git-kit Warning: Using fallback exec!
 git-kit origin	git@github.com:daleha/git-kit.git (fetch)
 origin	git@github.com:daleha/git-kit.git (push)
 git-kit ['origin\tgit@github.com:daleha/git-kit.git (fetch)', 'origin\tgit@github.com:daleha/git-kit.git (push)', '']
@@ -9,6 +11,7 @@ git-kit ['origin', 'git@github.com:daleha/git-kit.git (fetch)']
 git-kit ['origin', 'git@github.com:daleha/git-kit.git (push)']
 git-kit ['']
 git-kit [('origin', 'git@github.com:daleha/git-kit.git'), ('origin', 'git@github.com:daleha/git-kit.git')]
+git-kit Warning: Using fallback exec!
 git-kit origin	git@github.com:daleha/git-kit.git (fetch)
 origin	git@github.com:daleha/git-kit.git (push)
 git-kit ['origin\tgit@github.com:daleha/git-kit.git (fetch)', 'origin\tgit@github.com:daleha/git-kit.git (push)', '']
@@ -16,3 +19,4 @@ git-kit ['origin', 'git@github.com:daleha/git-kit.git (fetch)']
 git-kit ['origin', 'git@github.com:daleha/git-kit.git (push)']
 git-kit ['']
 git-kit [('origin', 'git@github.com:daleha/git-kit.git'), ('origin', 'git@github.com:daleha/git-kit.git')]
+git-kit Warning: Using fallback exec!
