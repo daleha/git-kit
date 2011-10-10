@@ -306,4 +306,3 @@ def untar(file, path=".",noroot=False,exclude=list()):
 #from Globals import ARGS
 #from Globals import PROGRAM
 
-LOG=createLog()
