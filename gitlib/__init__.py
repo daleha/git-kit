@@ -19,8 +19,8 @@ def gitCommitOneFile(fileToAdd,msg="Single file commit"):
 	if(not os.path.lexists(fileToAdd)):
 		abort("Cannot add file \""+fileToAdd+"\" does not exist")
 	gitAdd(fileToAdd)
-	cmd="git commit -m '"+msg+"'"
-	#print_console(simple_exec(cmd))
+	cmd="git commit -m \""+msg+"\""
+	print_console(simple_exec(cmd))
 	gitStashPop()
 
 def destroy(path):
