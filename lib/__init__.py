@@ -115,6 +115,11 @@ def print_label(label):
 	string=rad*"*"+label+":"+rad*"*"
 	print_console(string)	
 
+#hack attack...
+def fallback_exec(cmd):
+	print_console(os.popen(cmd).read().strip())
+	
+
 def simple_exec(command):
 
 	proc = Popen(command,shell=True, stdout=PIPE,stderr=PIPE, bufsize=-1, close_fds=ON_POSIX)
@@ -179,7 +184,7 @@ def stream_exec(command,path=None,verbose=True,callback=None):
 				callback()
 			output=output+line
 	os.chdir(cwd)
-	print proc.stderr.read()
+	print_console(proc.stderr.read())
 	return outlines
 
 
@@ -190,7 +195,7 @@ download status to console.
 """
 def wget( url, name,console=None,is_indeterminate=False):
 		"""Downloads from url specified to the filename/path specified and displays progress"""
-		print("Fetching "+name+" from "+url+"\n\n")
+		print_console("Fetching "+name+" from "+url+"\n\n")
 		#console update callback
 		def progresshook(numblocks, blocksize, filesize, url=None):
 			global LASTMSG	
@@ -212,11 +217,11 @@ def wget( url, name,console=None,is_indeterminate=False):
 				#	sys.stdout.write("\r"+out_str)
 					if (outstr != LASTMSG):
 						LASTMSG=outstr
-						print (outstr)
+						print_console(outstr)
 					
 					if (progstr!=LASTMSG):
 						LASTMSG=progstr	
-						print (progstr)	
+						print_console(progstr)	
 				else:
 					if (filesize>0):
 						pass
@@ -258,6 +263,8 @@ def cleanup():
 def print_console(line):
 	if line==None:
 		return
+	else:
+		line=str(line)
 	line=line.strip().replace("//","/")
 	line=PROGRAM+" "+line
 	#CONSOLE.writeLine(line)

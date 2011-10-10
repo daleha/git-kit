@@ -20,7 +20,7 @@ def gitCommitOneFile(fileToAdd,msg="Single file commit"):
 		abort("Cannot add file \""+fileToAdd+"\" does not exist")
 	gitAdd(fileToAdd)
 	cmd="git commit -m '"+msg+"'"
-	print(stream_exec(cmd))
+	print_console(stream_exec(cmd))
 	gitStashPop()
 
 def destroy(path):
@@ -56,12 +56,12 @@ def gitRemove(filePath):
 
 def readRemotes():
 	output=simple_exec("git remote -v")
-	print(output)
+	print_console(output)
 	remotes=list()
 	for line in output:
 		tokens=line.split("\t")
 		remotes.append((tokens[0],tokens[1].split(" ")[0]))
-	print (remotes)
+	print_console(remotes)
 	return remotes
 		
 		
@@ -151,7 +151,7 @@ def ignoreExpression(expression):
 	
 	print_console("The following files match the expression:")	
 
-	print(matches)	
+	print_console(matches)	
 	ignore=prompt_user("Would you like to ignore all of these files?")
 	
 	if(ignore):
