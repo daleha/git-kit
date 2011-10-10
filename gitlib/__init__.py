@@ -56,11 +56,13 @@ def gitRemove(filePath):
 
 def readRemotes():
 	output=simple_exec("git remote -v")
-#	print_console(output)
+	print_console(output)
 	remotes=list()
 	for line in output:
 		tokens=line.split("\t")
-		remotes.append((tokens[0],tokens[1].split(" ")[0]))
+		print_console(tokens)
+		if(len(tokens)>1 and tokens[1].find(" ")>=0):
+			remotes.append((tokens[0],tokens[1].split(" ")[0]))
 	print_console(remotes)
 	return remotes
 		

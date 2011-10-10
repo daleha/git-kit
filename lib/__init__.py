@@ -118,23 +118,27 @@ def print_label(label):
 
 #hack attack...
 def fallback_exec(cmd):
-	print_console(os.popen(cmd).read().strip())
+	output=os.popen(cmd).read().split("\n")
+	outcat="\n".join(output)
+	print_console(outcat)
+	return output
 	
 
 #unthreadsafe execution
 def simple_exec(command,verbose=True):
 
-	proc = Popen(command,shell=True, stdout=PIPE,stderr=PIPE, bufsize=-1, close_fds=ON_POSIX)
-
-	output=list()
-	
-	for line in proc.stdout:
-		output.append(line)
-	for line in proc.stderr:
-		output.append(line)
-
-	outcat="\n".join(output)
-	print_console(outcat)
+	output=fallback_exec(command)
+#	proc = Popen(command,shell=True, stdout=PIPE,stderr=PIPE, bufsize=-1, close_fds=ON_POSIX)
+#
+#	output=list()
+#	
+#	for line in proc.stdout:
+#		output.append(line)
+#	for line in proc.stderr:
+#		output.append(line)
+#
+#	outcat="\n".join(output)
+#	print_console(outcat)
 
 	return output
 		
