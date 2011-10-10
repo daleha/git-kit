@@ -9,6 +9,7 @@ from lib import abort
 from lib import log_flush
 from lib import print_console
 from lib import stream_exec
+from lib import simple_exec
 
 from gitlib import *
 
@@ -64,7 +65,7 @@ def startBranch(brname,remoteMap=list()):
 		abort("Ack! The branch you wanted to create already exists. Please either synch, or destroy it.")
 	
 	cmd="git checkout -b "+brname
-	stream_exec(cmd)
+	simple_exec(cmd)
 
 	for remote in remotes:
 		cmd="git remote add "+remote[0]+" "+remote[1]
@@ -146,7 +147,7 @@ def writeConfig(key,value,isglobal=True):
 		globalflag=" "
 	command=key+" "+value
 	command="git config "+globalflag+command
-	stream_exec(command,verbose=True)
+	simple_exec(command,verbose=True)
 #
 #def run(command,args):
 #	commands=command(*args)

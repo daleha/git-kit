@@ -121,7 +121,8 @@ def fallback_exec(cmd):
 	print_console(os.popen(cmd).read().strip())
 	
 
-def simple_exec(command):
+#unthreadsafe execution
+def simple_exec(command,verbose=True):
 
 	proc = Popen(command,shell=True, stdout=PIPE,stderr=PIPE, bufsize=-1, close_fds=ON_POSIX)
 
@@ -131,6 +132,9 @@ def simple_exec(command):
 		output.append(line)
 	for line in proc.stderr:
 		output.append(line)
+
+	outcat="\n".join(output)
+	print_console(outcat)
 
 	return output
 		

@@ -10,49 +10,49 @@ from lib import simple_exec
 
 def gitCommitAll(msg="Incremental Comitt"):
 	cmd="git add "+getGitRoot()+" && git commit -a -m \""+msg+"\""
-	stream_exec(cmd)
+	simple_exec(cmd)
 
 def gitCommitOneFile(fileToAdd,msg="Single file commit"):
 	gitStashPush()
 	cmd="git checkout stash@{0} -- "+fileToAdd	
-	stream_exec(cmd)
+	simple_exec(cmd)
 	if(not os.path.lexists(fileToAdd)):
 		abort("Cannot add file \""+fileToAdd+"\" does not exist")
 	gitAdd(fileToAdd)
 	cmd="git commit -m '"+msg+"'"
-	print_console(stream_exec(cmd))
+	#print_console(simple_exec(cmd))
 	gitStashPop()
 
 def destroy(path):
 	cmd= "git filter-branch --tree-filter 'rm -rf "+path+"' HEAD"
-	stream_exec(cmd)
+	simple_exec(cmd)
 
 def gitPush(brname,remote):
 	cmd="git push "+remote+" "+brname
-	stream_exec(cmd)
+	simple_exec(cmd)
 
 def pullRebase(brname,remote):
 	cmd="git pull --rebase "+remote+" "+brname
-	stream_exec(cmd)
+	simple_exec(cmd)
 
 def gitStashPush():
 	cmd="git stash"
-	stream_exec(cmd)
+	simple_exec(cmd)
 
 def gitStashPop():
 	cmd="git stash apply"
-	stream_exec(cmd)
+	simple_exec(cmd)
 
 def addRemote(remote=list()):
 	cmd="git remote add "+remote[0]+" "+remote[1]
-	stream_exec(cmd)
+	simple_exec(cmd)
 
 def gitRemove(filePath):
 	if(not os.path.lexists(filePath)):
 		abort("Cannot remove file \""+filePath+"\" does not exist")
 
 	cmd="git rm -rf "+filePath
-	stream_exec(cmd)
+	simple_exec(cmd)
 
 def readRemotes():
 	output=simple_exec("git remote -v")
@@ -81,7 +81,7 @@ def checkRemote(newRemote=list()):
 	
 
 def branchExists(brname):
-	output=	stream_exec("git branch -v")
+	output=	simple_exec("git branch -v")
 	for line in output:
 		if (line.find(brname)>=0):
 			print_console ("Local branch "+brname+" exists")
@@ -97,21 +97,21 @@ def gitAdd(path):
 		cmd= "git add "+path
 	else:
 		warn("Warning: the a file that you wanted me to add is not at a valid path")
-	stream_exec(cmd)
+	simple_exec(cmd)
 
 
 def createRepo():
 	
 	print_console("Creating a new git repository in "+workdir)
 	cmd="git init "
-	stream_exec(cmd)	
+	simple_exec(cmd)	
 
 	if(len(contents)!=0 ):
 		log_flush()
 		gitAdd(lib.LOG)
 
 	gitCommitAll('initialized git repository. Congratulations!')
-	stream_exec(cmd)
+	simple_exec(cmd)
 
 def getGitRoot():
 	cmd="git config --get alias.root"
@@ -157,7 +157,7 @@ def ignoreExpression(expression):
 	if(ignore):
 		writeGitIgnore(expression)		
 		cmd="git update-index --assume-unchanged"
-		stream_exec(cmd)
+		simple_exec(cmd)
 		delete=prompt_user("Would you like to delete all of these files?\n"+str(matches))
 		
 	else:
