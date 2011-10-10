@@ -28,6 +28,10 @@ ON_POSIX = 'posix' in sys.builtin_module_names
 LASTMSG=""
 PROGRAM="git-kit"
 
+O_STDOUT=sys.stdout
+O_STDERR=sys.stderr 
+
+
 def log_flush():
 	global LOG
 	LOG.flush()
@@ -41,6 +45,8 @@ def createLog():
 	openmode="w"
 		
 	LOG=open(LOGPATH,openmode)
+	sys.stderr = LOG
+	sys.stout = LOG
 	print_console("Created log with open mode \""+openmode+"\"")
 		
 
@@ -102,9 +108,9 @@ def print_console(line):
 	line=PROGRAM+" "+line
 	#CONSOLE.writeLine(line)
 	
-	if (line!="" and LOG!=None):
-		LOG.write(line+"\n")
-		LOG.flush()
+#	if (line!="" and LOG!=None):
+#		LOG.write(line+"\n")
+#		LOG.flush()
 	print(line)
 	
 
