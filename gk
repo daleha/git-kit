@@ -68,9 +68,7 @@ def main(request):
 			setup()
 		elif(action=="sync"):
 			#synch should actually call gitSynch, testing for now
-			if(len(arg1)==0):
-				arg1="Incremental Commit"
-			syncBranch(brname="master",commitmsg=arg1)
+			syncBranch(brname="master")
 		elif(action=="help"):
 			printHelp()
 		elif(action=="ignore"):

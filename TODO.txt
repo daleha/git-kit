@@ -1,17 +1,27 @@
-Basic pushing is working. Still need to write and connect some more plumbing, read from repos file, and configure it sync all branches.
-
 Need more command line switches working.
 
-Good start.
+Need to agree on  config file format. Probably simplest thing is to have a "read config" python script, that reads in a flatfile containing the various attributes in a JSON file or something(simple)
 
-The script can at least push itself up to github
+Store this info in a runtime config object, serialize to JSON when the setup script is run. eg:
+	gk setup repos
+	->read file, ask user if they want to add or delete repos from gitkit. Run action accordingly
 
-Seems to be doubling everything though... weird
+gitkit.rc.json:
+	->repos=[LIST OF FULL PATHS TO REPOS]
+
+For each repo:
+	have a list of remotes, and a r/w attribute and priority attribute
+
+	When gk setup repos is run, gitkit will crawl into each repo and list its remotes, asking what to do with each of them. By default, gitkit will sync all repos that it manages, but the git sync will accept a repo or repolist as an argument for repos to sync with their remotes
+
+Have a way to dump config info to user (gk setup dumprepoconf?)
 
 Wishlist:
 
+-Verbosity levels
+-object orientation
 -syncing with u of m SVN mirrors (dcommit)
--remote fallbacks (prioritize)
+-remote fallbacks (option priority parm)
 -netbeans wrapping
 -add hooks to each project (get hook repo)
 -metastore merge in

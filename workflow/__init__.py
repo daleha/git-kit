@@ -71,7 +71,7 @@ def startBranch(brname,remoteMap=list()):
 		cmd="git remote add "+remote[0]+" "+remote[1]
 		
 	
-def syncBranch(brname,remotes=list(),greedy=True):
+def syncBranch(brname,commitmsg="Incremental Commit",remotes=list(),greedy=True):
 	exists=branchExists(brname)
 	
 	if(exists):
@@ -95,7 +95,7 @@ def syncBranch(brname,remotes=list(),greedy=True):
 		gitStashPop()
 
 		if(greedy==True):
-			gitCommitAll("Incremental commit")
+			gitCommitAll(commitmsg)
 
 		gitPush(brname,remote[0])	
 
