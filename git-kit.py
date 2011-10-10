@@ -85,7 +85,7 @@ def init(request):
 	try:
 		if (verbose):
 			start = time.time()
-		createLog	
+		createLog()
 			
 		main(request)
 		

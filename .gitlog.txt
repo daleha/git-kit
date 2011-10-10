@@ -1,0 +1,4 @@
+git-kit Created log with open mode "a"
+git-kit Dispatched command "git branch -v"
+git-kit Branch master does not exist, synching from remotes
+git-kit Dispatched command "git stash"
