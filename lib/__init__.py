@@ -241,8 +241,11 @@ def shutdown():
 def cleanup():
 	global LOG
 	if (LOG!=None):
+		print_console("Flushing log")
 		LOG.flush()
 		LOG.close()
+	else:	
+		warn(".gitlog log was not flushed!")
 
 
 def print_console(line):

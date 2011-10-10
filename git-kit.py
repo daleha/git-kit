@@ -29,6 +29,8 @@ from lib import shutdown
 from lib import print_console
 from lib import warn
 from lib import abort
+from lib import log_flush
+from lib import createLog
 from workflow import *
 from gitlib import *
 
@@ -83,7 +85,8 @@ def init(request):
 	try:
 		if (verbose):
 			start = time.time()
-
+		createLog	
+			
 		main(request)
 		
 		if (verbose):
