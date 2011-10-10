@@ -145,7 +145,7 @@ Stream exec uses a message queue to prevent blocking and deadlock when doing
 cross-platform execution calls. This is particularly an issue when doing
 filesystem calls on Windows, which is why this method was created.
 """
-def stream_exec(command,path=None,verbose=True,callback=None):
+def stream_exec(command,path=None,verbose=True,callback=None,rtlogging=False):
 
 	outlines=list()
 	def enqueue_output(out, queue):
@@ -179,12 +179,24 @@ def stream_exec(command,path=None,verbose=True,callback=None):
 		line=read_output()
 		if (line!=None):
 			outlines.append(line)
-			if (verbose):
+			if (rtlogging==True):
 				print_console(line)
 			if (callback!=None):
 				callback()
 			output=output+line
 	os.chdir(cwd)
+	if(verbose==True):
+		print_console("Exec returned "+str(len(outlines))+" lines of output:")	
+
+		print_label("Dumping outlines")		
+		#dump the exec cache to console/log
+		dumped=0
+		for line in outlines:
+			print_console(line)
+			dumped=dumped+1
+	
+		print_label("Exec log dump complete. Dumped "+str(dumped)+" lines of output.")		
+			 	
 	print_console(proc.stderr.read())
 	return outlines
 

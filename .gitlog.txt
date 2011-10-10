@@ -1,5 +1,8 @@
 git-kit Created log with open mode "w"
 git-kit Dispatched command "git branch -v"
+git-kit Exec returned 0 lines of output:
+git-kit ********************Dumping outlines:********************
+git-kit ********************Exec log dump complete. Dumped 0 lines of output.:********************
 git-kit 
 git-kit Branch master does not exist, synching from remotes
 git-kit ['origin\tgit@github.com:daleha/git-kit.git (fetch)\n', 'origin\tgit@github.com:daleha/git-kit.git (push)\n']
