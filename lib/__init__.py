@@ -22,7 +22,7 @@ except ImportError:
 
 #import javax.swing.JOptionPane as JOptionPane
 LOG=None
-LOGPATH=".gitlog.txt"
+LOGPATH=".gitkitlog.txt"
 ON_POSIX = 'posix' in sys.builtin_module_names
 
 LASTMSG=""
