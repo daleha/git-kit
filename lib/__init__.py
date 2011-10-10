@@ -95,6 +95,7 @@ def bail(msg):
 	shutdown()
 
 def print_console(line):
+	global LOG
 	if line==None:
 		return
 	line=line.strip().replace("//","/")
