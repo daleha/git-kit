@@ -1,12 +1,8 @@
 git-kit Created log with open mode "w"
 git-kit Dispatched command "git branch -v"
-git-kit Exec returned 1 lines of output:
-git-kit ********************Dumping outlines:********************
-git-kit * master 854f2ba Incremental commit
-git-kit ********************Exec log dump complete. Dumped 1 lines of output.:********************
-git-kit 
-git-kit Local branch master exists
-git-kit Branch master exists synching with remotes
+git-kit * master 236f42c Incremental commit
+git-kit Warning: Branch master is not a local branch
+git-kit Branch master does not exist, synching from remotes
 git-kit [('origin', 'git@github.com:daleha/git-kit.git'), ('origin', 'git@github.com:daleha/git-kit.git')]
 git-kit [('origin', 'git@github.com:daleha/git-kit.git'), ('origin', 'git@github.com:daleha/git-kit.git')]
 git-kit Dispatched command "git stash"

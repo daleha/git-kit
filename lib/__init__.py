@@ -185,20 +185,21 @@ def stream_exec(command,path=None,verbose=True,callback=None,rtlogging=False):
 				callback()
 			output=output+line
 	os.chdir(cwd)
-	if(verbose==True):
-		print_console("Exec returned "+str(len(outlines))+" lines of output:")	
+	if(verbose==True or rtloging==False):
+		print_console(output)
+	#	print_console("Exec returned "+str(len(outlines))+" lines of output:")	
 
-		print_label("Dumping outlines")		
-		#dump the exec cache to console/log
-		dumped=0
-		for line in outlines:
-			print_console(line)
-			dumped=dumped+1
-	
-		print_label("Exec log dump complete. Dumped "+str(dumped)+" lines of output.")		
+	#	print_label("Dumping outlines")		
+	#	#dump the exec cache to console/log
+	#	dumped=0
+	#	for line in outlines:
+	#		print_console(line)
+	#		dumped=dumped+1
+	#
+	#	print_label("Exec log dump complete. Dumped "+str(dumpt update-index --assume-unchangeded)+" lines of output.")		
 			 	
-	print_console(proc.stderr.read())
-	return outlines
+	#print_console(proc.stderr.read())
+	return output
 
 
 """
