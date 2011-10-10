@@ -33,3 +33,14 @@ git-kit [('origin', 'git@github.com:daleha/git-kit.git'), ('origin', 'git@github
 git-kit ['origin\tgit@github.com:daleha/git-kit.git (fetch)\n', 'origin\tgit@github.com:daleha/git-kit.git (push)\n']
 git-kit [('origin', 'git@github.com:daleha/git-kit.git'), ('origin', 'git@github.com:daleha/git-kit.git')]
 git-kit Dispatched command "git stash"
+git-kit Created log with open mode "a"
+git-kit Dispatched command "git branch -v"
+git-kit * master 78f1ad0 Incremental commit
+git-kit 
+git-kit Local branch master exists
+git-kit Branch master exists synching with remotes
+git-kit ['origin\tgit@github.com:daleha/git-kit.git (fetch)\n', 'origin\tgit@github.com:daleha/git-kit.git (push)\n']
+git-kit [('origin', 'git@github.com:daleha/git-kit.git'), ('origin', 'git@github.com:daleha/git-kit.git')]
+git-kit ['origin\tgit@github.com:daleha/git-kit.git (fetch)\n', 'origin\tgit@github.com:daleha/git-kit.git (push)\n']
+git-kit [('origin', 'git@github.com:daleha/git-kit.git'), ('origin', 'git@github.com:daleha/git-kit.git')]
+git-kit Dispatched command "git stash"
