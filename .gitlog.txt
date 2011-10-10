@@ -27,3 +27,17 @@ git-kit Warning: Using fallback exec!
 git-kit CONFLICT (delete/modify): .gitlog.txt deleted in Updated upstream and modified in Stashed changes. Version Stashed changes of .gitlog.txt left in tree.
 git-kit Read git root as /media/storage/workspace/git-kit
 git-kit Warning: Using fallback exec!
+git-kit [master cf770b0] Incremental commit
+ 1 files changed, 29 insertions(+), 0 deletions(-)
+ create mode 100644 .gitlog.txt
+git-kit Warning: Using fallback exec!
+git-kit 
+git-kit Warning: Using fallback exec!
+git-kit origin	git@github.com:daleha/git-kit.git (fetch)
+origin	git@github.com:daleha/git-kit.git (push)
+git-kit ['origin\tgit@github.com:daleha/git-kit.git (fetch)', 'origin\tgit@github.com:daleha/git-kit.git (push)', '']
+git-kit ['origin', 'git@github.com:daleha/git-kit.git (fetch)']
+git-kit ['origin', 'git@github.com:daleha/git-kit.git (push)']
+git-kit ['']
+git-kit [('origin', 'git@github.com:daleha/git-kit.git'), ('origin', 'git@github.com:daleha/git-kit.git')]
+git-kit Warning: Using fallback exec!
