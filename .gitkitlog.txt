@@ -1,6 +1,6 @@
 git-kit Created log with open mode "w"
 git-kit Warning: Using fallback exec!
-git-kit * master 72b8d15 Incremental Commit
+git-kit * master eec6adb [ahead 1] Added dulwich api for embedding. This will remove the necessity to even have git installed on a machine, and so the only dependency will be python and openssh for pushing. To do: rework gitlib to make calls to dulwich instead of shell calls
 git-kit Local branch master exists
 git-kit Branch master exists synching with remotes
 git-kit Warning: Using fallback exec!
