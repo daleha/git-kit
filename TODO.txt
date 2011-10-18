@@ -1,20 +1,22 @@
+Switch to dulwich for plumbing, and remove all exec methods from lib
+
+Use gitlib as a wrapper around dulwich porcelain apis
+
 Need more command line switches working.
 
-Need to agree on  config file format. Probably simplest thing is to have a "read config" python script, that reads in a flatfile containing the various attributes in a JSON file or something(simple)
+gitkit.cfg
+	->repos=[LIST OF FULL PATHS TO REPOS]
 
-Store this info in a runtime config object, serialize to JSON when the setup script is run. eg:
 	gk setup repos
 	->read file, ask user if they want to add or delete repos from gitkit. Run action accordingly
-
-gitkit.rc.json:
-	->repos=[LIST OF FULL PATHS TO REPOS]
+	(use dulwich to read each repo's config file)
 
 For each repo:
 	have a list of remotes, and a r/w attribute and priority attribute
 
 	When gk setup repos is run, gitkit will crawl into each repo and list its remotes, asking what to do with each of them. By default, gitkit will sync all repos that it manages, but the git sync will accept a repo or repolist as an argument for repos to sync with their remotes
 
-Have a way to dump config info to user (gk setup dumprepoconf?)
+Have a way to dump config info to user (gk setup show / gk show setup?)
 
 Wishlist:
 
