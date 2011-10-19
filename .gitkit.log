@@ -3,11 +3,13 @@
 Object key 
 	request:
 has value:
-	['sync', 'hybrid', 'Pushing to upstream']
->>Syncing branch hybrid
+	['sync', 'master', 'Pushing to upstream master']
+>>Syncing branch master
 >>/media/storage/workspace/git-kit
 >>
->># On branch hybrid
+>># On branch master
+# Your branch is ahead of 'origin/master' by 14 commits.
+#
 # Changes to be committed:
 #   (use "git reset HEAD <file>..." to unstage)
 #
