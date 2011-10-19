@@ -1,5 +1,4 @@
 *.log
 *.pyc
 *.swp
-.gitkitlog.txt
-.gitlog.txt
+.gitkit.log

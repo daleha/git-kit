@@ -3,21 +3,22 @@
 Object key 
 	request:
 has value:
-	['sync', 'master', 'Pushing to upstream master']
+	['sync', 'master', 'Updated status and gitignore']
 >>Syncing branch master
 >>/media/storage/workspace/git-kit
 >>
 >># On branch master
-# Your branch is ahead of 'origin/master' by 14 commits.
-#
 # Changes to be committed:
 #   (use "git reset HEAD <file>..." to unstage)
 #
+#	modified:   .gitignore
 #	modified:   .gitkit.log
+#	new file:   STATUS.txt
 #
 # Changes not staged for commit:
-#   (use "git add <file>..." to update what will be committed)
+#   (use "git add/rm <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
 #	modified:   .gitkit.log
+#	deleted:    doc/STATUS.txt
 #
