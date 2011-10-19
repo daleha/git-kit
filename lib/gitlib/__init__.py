@@ -16,8 +16,12 @@ class Repo:
 
 	
 	def _native_exec(self,cmd):	
-		
-		debug.log(self.cmdrunner.execute(cmd.split(" ")))
+		rawcomlist=cmd.split(" ")	
+		comlist=list()
+		for each in rawcomlist:
+			comlist.append(each.replace("&S"," "))
+			
+		debug.log(self.cmdrunner.execute(comlist))
 		
 	def getConfig(self):	
 		from git import GitConfigParser
