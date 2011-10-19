@@ -40,6 +40,7 @@ class Repo:
 		self._native_exec("git add "+self.root)
 		self._native_exec("git status")
 		self._native_exec("git commit -a -m "+message)
+		self._native_exec("git push origin "+branchname+":"+branchname)
 		
 
 
