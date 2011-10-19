@@ -9,7 +9,11 @@ def gitConfigSetup(repo):
 def syncBranch(repo,**kwargs):
 	branch=kwargs["branch"]
 	debug.log("Syncing branch "+branch)
-	repo.syncBranch(branch)
+	try:
+		message=kwargs["message"]
+		repo.syncBranch(branch,message)
+	except:
+		repo.syncBranch(branch)
 
 
 

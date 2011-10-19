@@ -3,8 +3,8 @@ import os
 
 import debug
 
-#check if a file should be ignored
-#need to cache this data somewhere... maybe subclass dulwich.repo's Repo?
+#3rd party includes
+from git import Git
 
 class Repo:
 
@@ -12,8 +12,12 @@ class Repo:
 	def __init__(self,path):
 		self.root=path 
 		self.configpath=os.path.join(self.root,".git/config")
+		self.cmdrunner=Git(self.root)
 
+	
+	def _native_exec(self,cmd):	
 		
+		debug.log(self.cmdrunner.execute(cmd.split(" ")))
 		
 	def getConfig(self):	
 		from git import GitConfigParser
@@ -24,11 +28,13 @@ class Repo:
 		pass
 
 
-	def syncBranch(self,branchname):
-		from git import Git
-		cmdrunner=Git(self.root)
+	def syncBranch(self,branchname,message="Incremental commit"):
 		debug.log(self.root)
-		cmdrunner.execute("git")
+		#self._native_exec("git stash")
+		#self._native_exec("git checkout "+branchname)
+		self._native_exec("git add "+self.root)
+		self._native_exec("git status")
+		self._native_exec("git commit -a -m \"commit\"")
 		
 
 

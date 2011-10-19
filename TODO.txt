@@ -1,3 +1,5 @@
+Successfully call commands through gitpython wrapper.
+
 Switch to dulwich for plumbing, and remove all exec methods from lib
 
 Use gitlib as a wrapper around dulwich porcelain apis

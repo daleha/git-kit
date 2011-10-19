@@ -300,8 +300,15 @@ class Git(object):
 		  cwd=self._working_dir
 		  
 		# Start the process
-		print command
-		proc = Popen(command,cwd=cwd,stdin=istream,stderr=PIPE,stdout=PIPE)
+
+		proc = Popen(command,
+					cwd=cwd,
+					stdin=istream,
+					stderr=PIPE,
+					stdout=PIPE,
+					close_fds=(os.name=='posix'),# unsupported on linux
+					**subprocess_kwargs
+					)
 		if as_process:
 			return self.AutoInterrupt(proc, command)
 		
