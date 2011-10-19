@@ -34,7 +34,7 @@ class Repo:
 		#self._native_exec("git checkout "+branchname)
 		self._native_exec("git add "+self.root)
 		self._native_exec("git status")
-		self._native_exec("git commit -a -m \"commit\"")
+		self._native_exec("git commit -a -m commit")
 		
 
 

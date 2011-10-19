@@ -11,12 +11,7 @@ has value:
 # Changes to be committed:
 #   (use "git reset HEAD <file>..." to unstage)
 #
-#	modified:   .gitignore
 #	modified:   .gitkit.log
-#	renamed:    doc/TODO.txt -> TODO.txt
-#	modified:   lib/cmds/.__init__.py.swo
-#	modified:   lib/cmds/__init__.py
-#	modified:   lib/git/cmd.py
 #	modified:   lib/gitlib/.__init__.py.swo
 #	modified:   lib/gitlib/__init__.py
 #
