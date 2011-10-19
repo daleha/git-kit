@@ -29,12 +29,13 @@ class Repo:
 
 
 	def syncBranch(self,branchname,message="Incremental commit"):
+		message=message.replace(" ","&S")
 		debug.log(self.root)
 		#self._native_exec("git stash")
 		#self._native_exec("git checkout "+branchname)
 		self._native_exec("git add "+self.root)
 		self._native_exec("git status")
-		self._native_exec("git commit -a -m commit")
+		self._native_exec("git commit -a -m "+message)
 		
 
 

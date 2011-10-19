@@ -5,7 +5,6 @@ Object key
 has value:
 	['sync', 'hybrid', 'test']
 >>Syncing branch hybrid
->>Using message test
 >>/media/storage/workspace/git-kit
 >>
 >># On branch hybrid
@@ -15,6 +14,8 @@ has value:
 #	modified:   .gitkit.log
 #	modified:   lib/cmds/.__init__.py.swo
 #	modified:   lib/cmds/__init__.py
+#	modified:   lib/gitlib/.__init__.py.swo
+#	modified:   lib/gitlib/__init__.py
 #
 # Changes not staged for commit:
 #   (use "git add <file>..." to update what will be committed)
