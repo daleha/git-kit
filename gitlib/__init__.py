@@ -8,9 +8,45 @@ from lib import print_console
 from lib import stream_exec
 from lib import simple_exec
 
-def gitCommitAll(msg="Incremental Comitt"):
-	cmd="git add "+getGitRoot()+" && git commit -a -m \""+msg+"\""
-	simple_exec(cmd)
+from dulwich.objects import *
+
+from dulwich.repo import Repo
+
+#check if a file should be ignored
+#need to cache this data somewhere... maybe subclass dulwich.repo's Repo?
+def _isIgnored(repo,path=str()):
+"""
+	ignorepath=os.path.join(repo.path,".gitignore") //should get blob from commit using get_object(r.head()).tree
+	if(os.path.lexists(ignorepath)):
+		ignore=open(ignorepath)
+		for line in ignore:
+			line=line.trim()
+			if len(line)>0 and line[0]!="#":
+				#need to add negate and dir support as per .gitignore spec
+				if(fnmatch.fnmatch(filename, expression)):
+					return True
+"""#not ready yet...
+				
+		
+	return False
+
+def gitAdd(repo,path=str()):
+	if(os.path.lexists(path)):
+		if (os.path.isdir(path)):
+			contents=os.listdir(path)
+			for each in contents:
+				gitAdd(repo,os.path.join(path,each))
+		elif(os.path.isfile(path)):
+			if(not _isIgnored(repo,path)):
+				files=list()
+				files.append(path)
+				repo.stage(files)
+		
+	
+
+def gitCommitAll(repo,msg="Incremental Commit"):
+	gitAdd(repo,repo.path)
+	repo.do_commit(message=msg)
 
 def gitCommitOneFile(fileToAdd,msg="Single file commit"):
 	gitStashPush()
@@ -94,12 +130,7 @@ def branchExists(brname):
 			
 	
 
-def gitAdd(path):
-	if(os.path.lexists):
-		cmd= "git add "+path
-	else:
-		warn("Warning: the a file that you wanted me to add is not at a valid path")
-	simple_exec(cmd)
+	
 
 
 def createRepo():
