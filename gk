@@ -46,7 +46,11 @@ def main(request):
 		if(action=="configure"):
 			cmds.gitConfigSetup(repo)
 		elif(action=="sync"):
-			cmds.syncBranch(repo,branch=arg1)
+			if(len(args)>1):
+				message=message=args[1]
+			else:
+				message=""
+			cmds.syncBranch(repo,branch=args[0],message=message)
 		elif(action=="ignore"):
 			cmds.ignoreExpression(arg1)
 		elif(action=="help"):
