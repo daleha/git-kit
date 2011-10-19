@@ -5,6 +5,7 @@ Object key
 has value:
 	['sync', 'hybrid', 'test']
 >>Syncing branch hybrid
+>>Using message test
 >>/media/storage/workspace/git-kit
 >>
 >># On branch hybrid

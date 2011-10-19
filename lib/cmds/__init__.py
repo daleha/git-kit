@@ -12,9 +12,9 @@ def syncBranch(repo,**kwargs):
 	message=kwargs["message"]
 
 	if(message!=""):
+		debug.log("Using message "+message)
 		repo.syncBranch(branch,message)
 	else:
-		debug.log("Using message "+message)
 		repo.syncBranch(branch)
 
 
