@@ -3,7 +3,7 @@
 Object key 
 	request:
 has value:
-	['sync', 'hybrid']
+	['sync', 'hybrid', 'test']
 >>Syncing branch hybrid
 >>/media/storage/workspace/git-kit
 >>
@@ -12,8 +12,6 @@ has value:
 #   (use "git reset HEAD <file>..." to unstage)
 #
 #	modified:   .gitkit.log
-#	modified:   lib/gitlib/.__init__.py.swo
-#	modified:   lib/gitlib/__init__.py
 #
 # Changes not staged for commit:
 #   (use "git add <file>..." to update what will be committed)
