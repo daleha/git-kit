@@ -9,51 +9,30 @@ Created on Jun 14, 2010
 @author: Dale Hamel
 @contact: umhameld@cc.umanitoba.ca
 '''
-#python libs
-import traceback
-import os
-import sys
-import time
 
-#move these imports
-import shutil
-import subprocess
-import tarfile
-from subprocess import *
+#boot strapper imports
+import lib,sys,os
+from lib import boot_strap
 
-#custom lib imports
-
-from setup import setup
-
-from lib import shutdown
-from lib import print_console
-from lib import warn
-from lib import abort
-from lib import log_flush
-from lib import createLog
-from workflow import *
-from gitlib import *
-
-ACTIONS=("help","sync","userconf")
-
-def printHelp():
-	print(ACTIONS)
-
-def parse_argdict():
-	args=sys.argv
-	#(split sys.argv to git arguments, map keys (switches) to values)
-	request=list()
-	name=inspect.getfile( inspect.currentframe() )
-	base=args.index(name)
-	if (len(args)<=base+1):
-		abort("Not enough arguments. No help yet, sorry")
-	else:
-		request=args[base+1:]
-
-	return request
-			
-def main(request):
 	
+def main(request):
+	def printHelp():
+		debug.log("Available actions:",actions=actions)
+	
+	import debug 
+	import cmds
+	
+
+	actions=("help","sync","userconf")
+
+	debug.label("Bootstrapping completed")
+	debug.log("Got request: ",request=request)
+
+	from gitlib import Repo
+	pathname=os.path.dirname(sys.argv[0])
+	abspath= os.path.abspath(pathname)
+	repo=Repo(abspath)
+
 	#todo: add config check for default config options	
 	if (len(request)!=0):
 		action=request[0]
@@ -63,52 +42,24 @@ def main(request):
 		except:
 			arg1=str()
 			args=list()
-
-		if(action=="userconf"):
-			setup()
+		
+		if(action=="configure"):
+			cmds.gitConfigSetup(repo)
 		elif(action=="sync"):
-			#synch should actually call gitSynch, testing for now
-			syncBranch(brname="master")
+			cmds.syncBranch(repo,branch=arg1)
+		elif(action=="ignore"):
+			cmds.ignoreExpression(arg1)
 		elif(action=="help"):
 			printHelp()
-		elif(action=="ignore"):
-			ignoreExpression(arg1)
-			
+	
 			
 	else:
-		abort("Nothing to do")
-	
+		debug.abort("Nothing to do")
 
-def init(request):
-	verbose=False#read from dict
 
-	try:
-		if (verbose):
-			start = time.time()
-		createLog()
-			
-		main(request)
-		
-		if (verbose):
-
-			end = time.time()
-			elapsed= end - start
-			min = elapsed/60
-			print_console("git command took "+str(min)+" minutes.")
-
-#		showCustomDoc()
-
-	except:
-		
-		err=traceback.format_exc()
-		print_console(err)
-		#from bugmail import send_bug
-		#send_bug()
-
-	finally:
-		shutdown()
-
+def init_boot_strap():
+	boot_strap(main)
 
 
 if __name__ == "__main__":
-	init(parse_argdict())
+	init_boot_strap()

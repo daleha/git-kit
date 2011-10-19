@@ -1,0 +1,22 @@
+********************Bootstrapping completed:********************
+>>Got request: 
+Object key 
+	request:
+has value:
+	['sync', 'hybrid']
+>>Syncing branch hybrid
+>>/media/storage/workspace/git-kit
+>>Traceback (most recent call last):
+  File "/media/storage/workspace/git-kit/lib/__init__.py", line 54, in init
+    main(request)
+  File "gk", line 49, in main
+    cmds.syncBranch(repo,branch=arg1)
+  File "/media/storage/workspace/git-kit/lib/cmds/__init__.py", line 12, in syncBranch
+    repo.syncBranch(branch)
+  File "/media/storage/workspace/git-kit/lib/gitlib/__init__.py", line 31, in syncBranch
+    cmdrunner.execute("git")
+  File "/media/storage/workspace/git-kit/lib/git/cmd.py", line 345, in execute
+    raise GitCommandError(command, status, stderr_value)
+GitCommandError: 'g i t' returned exit status 1: 
+
+>>Exitting on error code 0
