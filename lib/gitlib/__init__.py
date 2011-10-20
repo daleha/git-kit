@@ -5,14 +5,16 @@ import debug
 
 #3rd party includes
 from git import Git
+from git import Repo
 
-class Repo:
+class GKRepo(Repo):
 
 
-	def __init__(self,path):
-		self.root=path 
-		self.configpath=os.path.join(self.root,".git/config")
+	def __init__(self,path,name="gitkit_repo"):
+		super(GKRepo,self).__init__(path)
+		self.root=path
 		self.cmdrunner=Git(self.root)
+		self.name=name
 
 	
 	def _native_exec(self,cmd):	
@@ -31,7 +33,26 @@ class Repo:
 	def writeConfig(self,key,value,isglobal=True):
 		pass
 
+	def listBranches(self):
+		branches = list()
 
+		for each in self.branches:
+			branches.append(each)
+	
+		debug.log("got branches:",branches=branches)
+		return branches
+		
+	
+	def listRemotes(self):
+		remotes = list()
+
+		for each in self.remotes:
+			remotes.append(each)
+	
+		debug.log("got remotes:",remotes=remotes)
+		return remotes
+		
+	
 	def syncBranch(self,branchname,message="Incremental commit"):
 		message=message.replace(" ","&S")
 		debug.log(self.root)
@@ -44,8 +65,23 @@ class Repo:
 		self._native_exec("git push origin "+branchname+":"+branchname)
 		
 
+	def generateRepoConfJson(self):
+		debug.log("Generating config for repository "+self.name)
+
+		localbranches=self.listBranches()
+		remotes = self.listRemotes()
+		self.remoteRefs= list()
+
+		
+		for remote in remotes:
+			remote.fetch()
+			debug.log("Remote: "+remote.url)
+			for ref in remote.refs:
+				self.remoteRefs.append(ref)
+				debug.log("\t"+ref.remote_name+":"+ref.remote_head)
 
 """
+
 		if(isglobal):
 			globalflag=" --global "
 		else:
@@ -210,5 +246,4 @@ def ignoreExpression(expression):
 		for each in matches:
 			gitRemove(each)				
 		gitCommitAll("Removed the files globbed by previous commit's .gitignore")
-
 """

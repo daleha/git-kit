@@ -28,11 +28,12 @@ def main(request):
 	debug.label("Bootstrapping completed")
 	debug.log("Got request: ",request=request)
 
-	from gitlib import Repo
+	from gitlib import GKRepo
+
 	pathname=os.path.dirname(sys.argv[0])
 	abspath= os.path.abspath(pathname)
-	repo=Repo(abspath)
-
+	repo=GKRepo(abspath)
+	repo.generateRepoConfJson()
 	#todo: add config check for default config options	
 	if (len(request)!=0):
 		action=request[0]
