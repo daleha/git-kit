@@ -19,21 +19,21 @@ Obviously you will need git, I will leave it you to you to install that for the 
 """
 
 def guessUsername():
-	return getpass.getuser()
-	
+return getpass.getuser()
+
 #setup tracking branches by default!!!
 def setup_gitconfig(repo):
-	debug.log("Setting up git configuration")
-	debug.log("Repo configuration: ",config=repo.getConfig())
-	
-	guessedRight=prompt_user("Is your (full) name \""+guessUsername()+"\"?")
-	if(not guessedRight):
-		username=prompt_user("Please enter your name",False)
-	else:
-		username=guessUsername()
+debug.log("Setting up git configuration")
+debug.log("Repo configuration: ",config=repo.getConfig())
 
-	isRoot=prompt_user("Is "+os.getcwd()+" the root directory of this Git repository?")
-	if(not isRoot):
+guessedRight=prompt_user("Is your (full) name \""+guessUsername()+"\"?")
+if(not guessedRight):
+	username=prompt_user("Please enter your name",False)
+else:
+	username=guessUsername()
+
+isRoot=prompt_user("Is "+os.getcwd()+" the root directory of this Git repository?")
+if(not isRoot):
 		root=prompt_user("Please enter the path to the root directory of this repository.")
 		while (not (os.path.lexists(root) and os.path.lexists(root+"/.git"))):
 			root=prompt_user("Please enter a valid POSIX compliant path. To the root directory")

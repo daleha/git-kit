@@ -42,7 +42,7 @@ def log(line,**kwargs):
 	if line==None:
 		return
 
-	line=">>"+line
+	line=">>"+str(line)
 	writelog(line)	
 
 	for arg in kwargs:

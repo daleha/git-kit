@@ -6,6 +6,7 @@ import debug
 #3rd party includes
 from git import Git
 from git import Repo
+from git import Repo
 
 class GKRepo(Repo):
 
@@ -13,7 +14,7 @@ class GKRepo(Repo):
 	def __init__(self,path,name="gitkit_repo"):
 		super(GKRepo,self).__init__(path)
 		self.root=path
-		self.cmdrunner=Git(self.root)
+		self.cmdrunner=self.git
 		self.name=name
 
 	
@@ -25,6 +26,20 @@ class GKRepo(Repo):
 			
 		debug.log(self.cmdrunner.execute(comlist))
 		
+	def _gitStashPush(execfunc):
+		cmd="git stash"
+		self._native_exec(cmd)
+
+	def _gitStashPop(execfunc):
+		cmd="git stash apply"
+		self._native_exec(cmd)
+
+		
+	def _commitAll(repo,msg="Incremental commit"):
+		message=message.replace(" ","&S")
+
+
+	
 	def getConfig(self):	
 		from git import GitConfigParser
 		debug.log(self.configpath)
@@ -50,35 +65,126 @@ class GKRepo(Repo):
 			remotes.append(each)
 	
 		debug.log("got remotes:",remotes=remotes)
+		print(type(remote))
 		return remotes
+
+	#is working tree clean?
+	def isClean(self):
+		return True
+
+	def syncBranch(self,**kwargs):
+		
+
+
+#	Fix me: each object should have a getCfgString (make an abstract class for this eventually)	
+#	def generateRepoConfJson(self):
+#		debug.log("Generating config for repository "+self.name)
+#
+#		localbranches=self.listBranches()
+#		remotes = self.listRemotes()
+#		self.remoteRefs= list()
+#
+#		
+#		for remote in remotes:
+#			remote.fetch()
+#			debug.log("Remote: "+remote.url)
+#			for ref in remote.refs:
+#				self.remoteRefs.append(ref)
+#				debug.log("\t"+ref.remote_name+":"+ref.remote_head)
+
+
+class Branch:
+
+	def __init__(self,repo,name,remotes=list(),cachemeta=False):
+		self.repo=repo
+		self.name=name
+		self.remotes=remotes
+		self.cache_meta=cachemeta
 		
 	
-	def syncBranch(self,branchname,message="Incremental commit"):
-		message=message.replace(" ","&S")
-		debug.log(self.root)
-		#self._native_exec("git stash")
-		#self._native_exec("git checkout "+branchname)
-		self._native_exec("git add "+self.root)
-		self._native_exec("git status")
-		self._native_exec("git commit -a -m \""+message+"\"")
-		debug.log("Pushing objects...")
-		self._native_exec("git push origin "+branchname+":"+branchname)
 		
+	def safeSyncBranch(self,repo): #use kwargs
+		self.name=kwargs["branch"]
+	
+		if(not repo.isClean()):
+			if(self.cache_meta):
+				debug.log("Metadata storage not yet implemented")
+				#import metastore
+				#metastore.store_metadata()	
+			if(kwargs.has_key("cmsg")):
+				cmsg=kwargs["cmsg"]
+			else:
+				cmsg="Incremental Commit"
 
-	def generateRepoConfJson(self):
-		debug.log("Generating config for repository "+self.name)
+			repo.gitCommitAll(cmsg)
+	
+		debug.log("""
+			You want me to sync "+brname+", but you migh have given me an 
+			unclean working tree ( hopefully you didn't).
+			Stashing your tree state.""")
+		repo.gitStashPush()
 
-		localbranches=self.listBranches()
-		remotes = self.listRemotes()
-		self.remoteRefs= list()
-
+		debug.log("""
+			Working tree clean. Local stack may have been pushed""")
 		
-		for remote in remotes:
-			remote.fetch()
-			debug.log("Remote: "+remote.url)
-			for ref in remote.refs:
-				self.remoteRefs.append(ref)
-				debug.log("\t"+ref.remote_name+":"+ref.remote_head)
+#		debug.log("""Alright, checking if we need to switch head refs...
+
+#			debug.log("""Switching head refs""")
+#			
+	
+		for remote in remotes:	
+			repo.pullRebase(self.name,remote)
+#			
+			if(remote.isWriteable()):
+				_push(self.name,remote)
+
+#		debug.log("""Alright, checking if we need to switch head refs...
+
+#			debug.log("""Switching head refs""")
+#		
+		debug.log("""
+			Alright, you've synch with the specified remotes. Now I'll restore your working tree""")	
+		repo.gitStashPop()
+
+
+
+	
+
+
+class Remote:
+	def __init__(self,upstream_name,upstream_branch,writable=False,**kwargs):
+		self.upstream_name=upstream_name
+		self.upstream_branch=upstream_branch
+		self.writeable=False
+		
+		if(kwargs.has_key("url")):
+			self.url=kwargs["url"]
+
+	def isWriteable():
+		return self.writable
+
+	def pullRebase(self):
+			
+		self._native_exec("git pull --rebase "+self.upstream_name+" "+self.upstream_branch )
+	
+
+
+	def push(self):
+		self._native_exec("git push "+self.upstream_name+" "+self.upstream_branch)
+#
+		
+	
+
+"""
+			if(not check):
+				print_console("Synching with new remote")
+				addRemote(remote)
+"""
+
+	
+			
+			
+		
 
 """
 
@@ -90,9 +196,6 @@ class GKRepo(Repo):
 		command="git config "+globalflag+command
 		simple_exec(command,verbose=True)
 
-def gitCommitAll(repo,msg="Incremental Commit"):
-	gitAdd(repo,repo.path)
-	repo.do_commit(message=msg)
 
 def gitCommitOneFile(fileToAdd,msg="Single file commit"):
 	gitStashPush()
@@ -112,19 +215,6 @@ def destroy(path):
 def gitPush(brname,remote):
 	cmd="git push "+remote+" "+brname
 	simple_exec(cmd)
-
-def pullRebase(brname,remote):
-	cmd="git pull --rebase "+remote+" "+brname
-	simple_exec(cmd)
-
-def gitStashPush():
-	cmd="git stash"
-	simple_exec(cmd)
-
-def gitStashPop():
-	cmd="git stash apply"
-	simple_exec(cmd)
-
 def addRemote(remote=list()):
 	cmd="git remote add "+remote[0]+" "+remote[1]
 	simple_exec(cmd)

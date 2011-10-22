@@ -140,14 +140,6 @@ def gitSync(wrkdir=os.getcwd(),branches=dict(),create=True,trackMaster=True,reba
 #
 #	
 #
-def writeConfig(key,value,isglobal=True):
-	if(isglobal):
-		globalflag=" --global "
-	else:
-		globalflag=" "
-	command=key+" "+value
-	command="git config "+globalflag+command
-	simple_exec(command,verbose=True)
 #
 #def run(command,args):
 #	commands=command(*args)

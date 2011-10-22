@@ -23,7 +23,7 @@ def main(request):
 	import cmds
 	
 
-	actions=("help","sync","userconf")
+	actions=("help","sync","userconf","_handhold")
 
 	debug.label("Bootstrapping completed")
 	debug.log("Got request: ",request=request)
@@ -33,34 +33,31 @@ def main(request):
 	pathname=os.path.dirname(sys.argv[0])
 	abspath= os.path.abspath(pathname)
 	repo=GKRepo(abspath)
-	repo.generateRepoConfJson()
+
 	#todo: add config check for default config options	
 	if (len(request)!=0):
 		action=request[0]
-		try:
-			arg1=request[1]
-			args=request[1:]
-		except:
-			arg1=str()
-			args=list()
-		
+
+		if(len(request)>1):
+			arguments=request[1:]	
+		else:
+			arguments=None
+
 		if(action=="configure"):
-			cmds.gitConfigSetup(repo)
+			cmds.gitConfigSetup(repo,args)
 		elif(action=="sync"):
-			if(len(args)>1):
-				message=message=args[1]
-			else:
-				message=""
-			cmds.syncBranch(repo,branch=args[0],message=message)
+			cmds.safeSyncBranch(repo,args)
 		elif(action=="ignore"):
-			cmds.ignoreExpression(arg1)
+			cmds.ignoreExpression(repo,args)
 		elif(action=="help"):
 			printHelp()
+		elif(action=="_handhold"):
+			cmds._handHold(repo)		
+		else:
+			cmds._handHold(repo)		
 	
-			
-	else:
-		debug.abort("Nothing to do")
 
+			
 
 def init_boot_strap():
 	boot_strap(main)
