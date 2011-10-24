@@ -23,7 +23,7 @@ class GKRepo(Repo):
 			rawcomlist=cmd.split(" ")	
 			cmd=list()
 			for each in rawcomlist:
-				cmd.append(each.replace("&S"," "))
+				cmd.append(each)
 			
 		debug.log(self.cmdrunner.execute(cmd))
 		
@@ -37,7 +37,7 @@ class GKRepo(Repo):
 
 		
 	def gitCommitAll(self,cmsg):
-		cmd=["git", "commit", "-a", "-m", "\""+cmsg+"\""]
+		cmd=["git", "commit", "-a", "-m", cmsg]
 		self._native_exec(cmd)
 
 
@@ -72,7 +72,7 @@ class GKRepo(Repo):
 
 	#is working tree clean?
 	def isClean(self):
-		return False
+		return not self.is_dirty()
 
 	def syncBranch(self,**kwargs):
 
