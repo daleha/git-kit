@@ -167,10 +167,10 @@ class Branch:
 
 
 class Remote:
-	def __init__(self,_exec,upstream_name,upstream_branch,writable=False,**kwargs):
+	def __init__(self,_exec,upstream_name,upstream_branch,writeable=False,**kwargs):
 		self.upstream_name=upstream_name
 		self.upstream_branch=upstream_branch
-		self.writeable=False
+		self.writeable=writeable
 		self._exec=_exec
 		
 		if(kwargs.has_key("url")):
