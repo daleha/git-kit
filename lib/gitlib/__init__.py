@@ -139,7 +139,6 @@ class Branch:
 			You want me to sync "+brname+", but you migh have given me an 
 			unclean working tree ( hopefully you didn't).
 			Stashing your tree state.""")
-		self.repo.gitStashPush()
 
 		debug.log("""
 			Working tree clean. Local stack may have been pushed""")
@@ -161,7 +160,6 @@ class Branch:
 #		
 		debug.log("""
 			Alright, you've synch with the specified remotes. Now I'll restore your working tree""")	
-		self.repo.gitStashPop()
 
 
 
