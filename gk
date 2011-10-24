@@ -39,9 +39,9 @@ def main(request):
 		action=request[0]
 
 		if(len(request)>1):
-			arguments=request[1:]	
+			args=request[1:]	
 		else:
-			arguments=None
+			args=None
 
 		if(action=="configure"):
 			cmds.gitConfigSetup(repo,args)

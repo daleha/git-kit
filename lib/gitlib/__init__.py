@@ -26,17 +26,19 @@ class GKRepo(Repo):
 			
 		debug.log(self.cmdrunner.execute(comlist))
 		
-	def _gitStashPush(execfunc):
+	def gitStashPush(self):
 		cmd="git stash"
 		self._native_exec(cmd)
 
-	def _gitStashPop(execfunc):
+	def gitStashPop(self):
 		cmd="git stash apply"
 		self._native_exec(cmd)
 
 		
-	def _commitAll(repo,msg="Incremental commit"):
-		message=message.replace(" ","&S")
+	def gitCommitAll(self,cmsg):
+		message=cmsg.replace(" ","&S")
+		cmd="git commit -a -m \""+message+"\""
+		self._native_exec(cmd)
 
 
 	
@@ -70,11 +72,24 @@ class GKRepo(Repo):
 
 	#is working tree clean?
 	def isClean(self):
-		return True
+		return False
 
 	def syncBranch(self,**kwargs):
-		
 
+		origin = Remote(_exec=self._native_exec,upstream_name="origin",upstream_branch=kwargs["branch"],writeable=True)#hack
+
+		remotes=list()#hack	
+		remotes.append(origin)#hack
+
+
+		toSync=Branch(self,kwargs["branch"],remotes)
+
+		toSync.safeSyncBranch(cmsg=kwargs["cmsg"])
+
+	def getExecFunc(self):
+		return self._native_exec
+
+		
 
 #	Fix me: each object should have a getCfgString (make an abstract class for this eventually)	
 #	def generateRepoConfJson(self):
@@ -101,12 +116,14 @@ class Branch:
 		self.remotes=remotes
 		self.cache_meta=cachemeta
 		
-	
-		
-	def safeSyncBranch(self,repo): #use kwargs
-		self.name=kwargs["branch"]
-	
-		if(not repo.isClean()):
+
+	def getRepoExec(self):
+		return self.repo.getExecFunc()
+			
+	#accepts cmsg, and branch name		
+	def safeSyncBranch(self,**kwargs): #use kwargs
+
+		if(not self.repo.isClean()):
 			if(self.cache_meta):
 				debug.log("Metadata storage not yet implemented")
 				#import metastore
@@ -116,13 +133,13 @@ class Branch:
 			else:
 				cmsg="Incremental Commit"
 
-			repo.gitCommitAll(cmsg)
+			self.repo.gitCommitAll(cmsg)
 	
 		debug.log("""
 			You want me to sync "+brname+", but you migh have given me an 
 			unclean working tree ( hopefully you didn't).
 			Stashing your tree state.""")
-		repo.gitStashPush()
+		self.repo.gitStashPush()
 
 		debug.log("""
 			Working tree clean. Local stack may have been pushed""")
@@ -131,12 +148,12 @@ class Branch:
 
 #			debug.log("""Switching head refs""")
 #			
-	
-		for remote in remotes:	
-			repo.pullRebase(self.name,remote)
+		for remote in self.remotes:	
+			remote.pullRebase()
 #			
 			if(remote.isWriteable()):
-				_push(self.name,remote)
+				remote.push()
+			
 
 #		debug.log("""Alright, checking if we need to switch head refs...
 
@@ -144,7 +161,7 @@ class Branch:
 #		
 		debug.log("""
 			Alright, you've synch with the specified remotes. Now I'll restore your working tree""")	
-		repo.gitStashPop()
+		self.repo.gitStashPop()
 
 
 
@@ -152,25 +169,26 @@ class Branch:
 
 
 class Remote:
-	def __init__(self,upstream_name,upstream_branch,writable=False,**kwargs):
+	def __init__(self,_exec,upstream_name,upstream_branch,writable=False,**kwargs):
 		self.upstream_name=upstream_name
 		self.upstream_branch=upstream_branch
 		self.writeable=False
+		self._exec=_exec
 		
 		if(kwargs.has_key("url")):
 			self.url=kwargs["url"]
 
-	def isWriteable():
-		return self.writable
+	def isWriteable(self):
+		return self.writeable
 
 	def pullRebase(self):
 			
-		self._native_exec("git pull --rebase "+self.upstream_name+" "+self.upstream_branch )
+		self._exec("git pull --rebase "+self.upstream_name+" "+self.upstream_branch )
 	
 
 
 	def push(self):
-		self._native_exec("git push "+self.upstream_name+" "+self.upstream_branch)
+		self._exec("git push "+self.upstream_name+" "+self.upstream_branch)
 #
 		
 	
