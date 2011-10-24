@@ -37,8 +37,7 @@ class GKRepo(Repo):
 
 		
 	def gitCommitAll(self,cmsg):
-		message=cmsg.replace(" ","&S")
-		cmd=["git", "commit", "-a", "-m", "\""+message+"\""]
+		cmd=["git", "commit", "-a", "-m", "\""+cmsg+"\""]
 		self._native_exec(cmd)
 
 
