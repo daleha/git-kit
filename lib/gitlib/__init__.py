@@ -188,6 +188,7 @@ class Remote:
 
 
 	def push(self):
+		debug.log("writing to remote "+self.upstream_name+" "+self.upstream_branch)
 		self._exec("git push "+self.upstream_name+" "+self.upstream_branch)
 #
 		
