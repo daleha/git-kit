@@ -19,12 +19,13 @@ class GKRepo(Repo):
 
 	
 	def _native_exec(self,cmd):	
-		rawcomlist=cmd.split(" ")	
-		comlist=list()
-		for each in rawcomlist:
-			comlist.append(each.replace("&S"," "))
+		if (not type(cmd)==list):
+			rawcomlist=cmd.split(" ")	
+			cmd=list()
+			for each in rawcomlist:
+				comlist.append(each.replace("&S"," "))
 			
-		debug.log(self.cmdrunner.execute(comlist))
+		debug.log(self.cmdrunner.execute(cmd))
 		
 	def gitStashPush(self):
 		cmd="git stash"
@@ -37,7 +38,7 @@ class GKRepo(Repo):
 		
 	def gitCommitAll(self,cmsg):
 		message=cmsg.replace(" ","&S")
-		cmd="git commit -a -m \""+message+"\""
+		cmd=["git", "commit", "-a", "-m", "\""+message+"\""]
 		self._native_exec(cmd)
 
 
