@@ -23,7 +23,7 @@ class GKRepo(Repo):
 			rawcomlist=cmd.split(" ")	
 			cmd=list()
 			for each in rawcomlist:
-				comlist.append(each.replace("&S"," "))
+				cmd.append(each.replace("&S"," "))
 			
 		debug.log(self.cmdrunner.execute(cmd))
 		
