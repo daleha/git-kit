@@ -8,6 +8,7 @@ def gitConfigSetup(repo):
 
 def safeSyncBranch(repo,args):
 
+
 	if(len(args)>0):
 		branch=args[0]	
 	else:
