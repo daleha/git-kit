@@ -1,11 +1,24 @@
+"""
+The cmds module contains the highest level APIs, mapping command line arguments to function calls directly
+"""
 
+
+"""
+Please put all global namespace imports at the bottom of the file.
+"""
+
+
+"""
+Run setup on a repository to start using it with gitkit, and configure various settings
+"""
 def gitConfigSetup(repo):
 	from setup import setup_gitconfig
 
 	setup_gitconfig(repo)
 
-#used to sync a single branch
-
+"""
+Safely sinc a single branch in a single repo
+"""
 def safeSyncBranch(repo,args):
 
 
@@ -24,14 +37,38 @@ def safeSyncBranch(repo,args):
 
 	repo.syncBranch(cmsg=cmsg,branch=branch)
 
+"""
+Ignore an expression given in a format suitable for fnmatch, or else a
+filepath
+"""
+def ignoreExpression(repo,args):
+	if (len(args)!=1):
+		debug.abort("Ignore expression didn't get enough args")
+	else:
+		repo.ignoreExpression(args[0])
+		
 
-	
+
+"""
+Provide a list of high level opis to the user
+"""	
 def _handHold(repo,**kwargs):
 	global METHODS
 	handhold=prompt_user("No arguments eh? Want some help?")
-	debug.log("Choose from one of: ")
-	debug.log(METHODS)
-#actuall add handhold stuff
+	if(not handHold):
+		return
+	choice=prompt_user("Enter choice from: ",isbool=False,opts=METHODS)
+	
+	choiceFunc= globals()[choice]
+	if(prompt_user("Do you want to supply arguments to "+choice+"?")):
+		args=prompt_user("Please provide arguments for "+choice,isbool=False)
+	else:
+		args=None
+	if(args==None):
+		choiceFunc(repo)
+	else:
+		choiceFunc(repo,args)
+#actuall add more handhold,including arguments for each func
 	
 
 global METHODS

@@ -7,6 +7,7 @@ import debug
 from git import Git
 from git import Repo
 from git import Repo
+from git.exc import GitCommandError
 
 class GKRepo(Repo):
 
@@ -36,7 +37,7 @@ class GKRepo(Repo):
 		debug.log(self.cmdrunner.execute(cmd))
 			
 	def _writeGitIgnore(self,line):
-		ignorepath=os.path.join(self.root+".gitignore")
+		ignorepath=os.path.join(self.root,".gitignore")
 		gitignore=open(ignorepath,"a")
 		gitignore.write(line+"\n")
 		gitignore.flush()
@@ -47,21 +48,40 @@ class GKRepo(Repo):
 
 		wasClean=True
 
+		if(not os.path.lexists(fileToAdd)):
+			abort("Cannot add file \""+fileToAdd+"\" does not exist")
+
 		if(not self.isClean()):
 			self.gitStashPush()
 			wasClean=False
 
 			cmd="git checkout stash@{0} -- "+fileToAdd	
 
-			_native_exec(cmd)
-		if(not os.path.lexists(fileToAdd)):
-			abort("Cannot add file \""+fileToAdd+"\" does not exist")
-
-		gitAdd(fileToAdd)
-		cmd="git commit -m \""+msg+"\""
-		debug.log(_native__exec(cmd))
+			self._native_exec(cmd)
+	
+		self._addFile(fileToAdd)
+		cmd=["git", "commit", "-m", msg]
+		debug.log(self._native_exec(cmd))
 		if(not wasClean):
 			self.gitStashPop()
+
+	def _removeFiles(self,filePaths):
+		wasClean=True
+
+		if(not self.isClean()):
+			self.gitStashPush()
+			wasClean=False
+
+		for each in filePaths:
+			cmd="git checkout stash@{0} -- "+each
+			self._removeFile(each)				
+
+		self.gitCommitAll(cmsg="Removed the files requested")
+
+		
+		if(not wasClean):
+			self.gitStashPop()
+
 
 
 	def _removeFile(self,filePath):
@@ -69,12 +89,23 @@ class GKRepo(Repo):
 			abort("Cannot remove file \""+filePath+"\" does not exist")
 
 		cmd="git rm -rf "+filePath
-		_native_exec(cmd)
+		try:
+
+			self._native_exec(cmd)
+		except GitCommandError:
+#			debug.warn("filePath could not be removed - this means it is either ignored, or untracked by git")
+			self._native_exec("rm -rf "+filePath)
+	
+	def _addFile(self,filePath):
+		if(not os.path.lexists(filePath)):
+			abort("Cannot add file \""+filePath+"\" does not exist")
+		cmd="git add "+filePath
+		self._native_exec(cmd)
 
 
 	def _destroyFile(self,path):
 		cmd= "git filter-branch --tree-filter 'rm -rf "+path+"' HEAD"
-		_native_exec(cmd)
+		self._native_exec(cmd)
 	
 	def _destroyOnAllRemotes(self,filesPaths=list()):
 		for file in filePaths:	
@@ -97,8 +128,13 @@ class GKRepo(Repo):
 
 		
 	def gitCommitAll(self,cmsg):
-		cmd=["git", "commit", "-a", "-m", cmsg]
-		self._native_exec(cmd)
+		cmd=["git", "commit", "-a", "-m", "\""+cmsg+"\""]
+
+		try:
+			self._native_exec(cmd)
+		except GitCommandError:
+			debug.warn("There was nothing to do")
+
 
 
 
@@ -122,6 +158,7 @@ class GKRepo(Repo):
 		pass
 
 	"""
+
 	List available branches in the repo as branch objects
 	"""
 	def listBranches(self):
@@ -199,11 +236,8 @@ class GKRepo(Repo):
 			delete=False
 
 		if(delete):
-			for each in matches:
-				gitRemove(each)				
-			gitCommitAll("Removed the files globbed by previous commit's .gitignore")
-
-
+			self._removeFiles(matches)
+			
 
 
 
@@ -355,7 +389,7 @@ def branchExists(brname):
 			print_console ("Local branch "+brname+" exists")
 			return True
 		else:
-			warn("Branch "+brname+" is not a local branch")
+			self.warn("Branch "+brname+" is not a local branch")
 			return False
 			
 	

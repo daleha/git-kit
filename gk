@@ -23,7 +23,7 @@ def main(request):
 	import cmds
 	
 
-	actions=("help","sync","userconf","_handhold")
+	actions=("help","sync","userconf","ignore","_handhold")
 
 	debug.label("Bootstrapping completed")
 	debug.log("Got request: ",request=request)
@@ -48,6 +48,7 @@ def main(request):
 		elif(action=="sync"):
 			cmds.safeSyncBranch(repo,args)
 		elif(action=="ignore"):
+			debug.log(args)
 			cmds.ignoreExpression(repo,args)
 		elif(action=="help"):
 			printHelp()

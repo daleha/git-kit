@@ -54,6 +54,7 @@ def shutdown(rc):
 		log("Shut down normally")
 	else:
 		log("Exitting on error code "+str(rc))
+
 	sys.exit(rc)
 	#CONSOLE.shutdown()
 		

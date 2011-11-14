@@ -1,4 +1,14 @@
-Successfully call commands through gitpython wrapper.
+Critical Todo:
+
+-Gk ignore - fix the plumbing
+-Initialize hooks already present in repo  to each project (get hook repo [HOOKDIR - .hook assumed])
+	-gk hook [HOOKDIR - .hook assumed]
+-metastore merge in
+-Submodule management
+	- add code to git sync so that by default in checks for and freezes heads in all submodules to working tree state
+	- add code to easily add,remove submodules.
+		-gk create submodule
+		-gk destroy submodule
 
 Switch to dulwich for plumbing, and remove all exec methods from lib
 
@@ -23,9 +33,9 @@ Have a way to dump config info to user (gk setup show / gk show setup?)
 Wishlist:
 
 -Verbosity levels
--object orientation
 -syncing with u of m SVN mirrors (dcommit)
 -remote fallbacks (option priority parm)
 -netbeans wrapping
--add hooks to each project (get hook repo)
--metastore merge in
+
+
+
