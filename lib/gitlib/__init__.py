@@ -17,7 +17,15 @@ class GKRepo(Repo):
 		self.cmdrunner=self.git
 		self.name=name
 
-	
+	def _readRemotes(self):
+		for each in self.remotes:
+			newRemote = RemoteUpstreamBranch(_exec=self._native_exec,upstream_name="origin",upstream_branch=kwargs["branch"],writeable=True)#hack
+			self.gkremotes.add(newRemote) #should make this a hashtable?
+
+		remotes=list()#hack	
+		remotes.append(origin)#hack
+
+
 	def _native_exec(self,cmd):	
 		if (not type(cmd)==list):
 			rawcomlist=cmd.split(" ")	
@@ -26,7 +34,59 @@ class GKRepo(Repo):
 				cmd.append(each)
 			
 		debug.log(self.cmdrunner.execute(cmd))
+			
+	def _writeGitIgnore(self,line):
+		ignorepath=os.path.join(self.root+".gitignore")
+		gitignore=open(ignorepath,"a")
+		gitignore.write(line+"\n")
+		gitignore.flush()
+		gitignore.close()
+		self._gitCommitOneFile(ignorepath,msg="Wrote to gitignore")
+
+	def _gitCommitOneFile(self,fileToAdd,msg="Single file commit"):
+
+		wasClean=True
+
+		if(not self.isClean()):
+			self.gitStashPush()
+			wasClean=False
+
+			cmd="git checkout stash@{0} -- "+fileToAdd	
+
+			_native_exec(cmd)
+		if(not os.path.lexists(fileToAdd)):
+			abort("Cannot add file \""+fileToAdd+"\" does not exist")
+
+		gitAdd(fileToAdd)
+		cmd="git commit -m \""+msg+"\""
+		debug.log(_native__exec(cmd))
+		if(not wasClean):
+			self.gitStashPop()
+
+
+	def _removeFile(self,filePath):
+		if(not os.path.lexists(filePath)):
+			abort("Cannot remove file \""+filePath+"\" does not exist")
+
+		cmd="git rm -rf "+filePath
+		_native_exec(cmd)
+
+
+	def _destroyFile(self,path):
+		cmd= "git filter-branch --tree-filter 'rm -rf "+path+"' HEAD"
+		_native_exec(cmd)
+	
+	def _destroyOnAllRemotes(self,filesPaths=list()):
+		for file in filePaths:	
+			_destroyFile(file)
 		
+		for remote in self.remotes:
+			#ripple this change to all remotes
+			pass
+		
+
+
+
 	def gitStashPush(self):
 		cmd="git stash"
 		self._native_exec(cmd)
@@ -41,15 +101,29 @@ class GKRepo(Repo):
 		self._native_exec(cmd)
 
 
+
 	
 	def getConfig(self):	
 		from git import GitConfigParser
 		debug.log(self.configpath)
 		return GitConfigParser(self.configpath)._sections
 
-	def writeConfig(self,key,value,isglobal=True):
+
+	"""
+	Will be used to call the repo object serializer, and update the repo by key in config file using config calls to json
+	"""
+	def writeConfig():
 		pass
 
+	"""
+	Will be used to call add config params to repo config
+	"""
+	def writeToConfig(self,key,value,isglobal=True):
+		pass
+
+	"""
+	List available branches in the repo as branch objects
+	"""
 	def listBranches(self):
 		branches = list()
 
@@ -74,22 +148,64 @@ class GKRepo(Repo):
 	def isClean(self):
 		return not self.is_dirty()
 
+	"""
+	Used to provide a means of synching a single branch in the repo
+	"""
 	def syncBranch(self,**kwargs):
 
-		origin = Remote(_exec=self._native_exec,upstream_name="origin",upstream_branch=kwargs["branch"],writeable=True)#hack
 
-		remotes=list()#hack	
-		remotes.append(origin)#hack
-
-
-		toSync=Branch(self,kwargs["branch"],remotes)
+		toSync=Branch(self,kwargs["branch"],self.remotes)
 
 		toSync.safeSyncBranch(cmsg=kwargs["cmsg"])
 
+	"""
+	Accessor to exec function, for native calls on this repo
+	"""
 	def getExecFunc(self):
 		return self._native_exec
 
+	"""
+	Add an expression to the .gitignore, and prompt for deletion
+	"""
+	def ignoreExpression(self,expression):
 		
+		from ui import prompt_user
+		import fnmatch
+		matches=list()
+
+	 
+		if(not os.path.isfile(expression)): 
+			for root, dirs, files in os.walk(self.root):
+				for filename in files:
+					#print filename
+					if(fnmatch.fnmatch(filename, expression)):
+					#	print ('match'+filename)
+						matches.append(os.path.join(root, filename))
+		else:
+			matches.append(expression)#probably need to doctor the syntax here
+		
+		debug.log("The following files match the expression:")	
+
+		debug.log(matches)	
+		ignore=prompt_user("Would you like to ignore all of these files?")
+		
+		if(ignore):
+			self._writeGitIgnore(expression)		
+			cmd="git update-index --assume-unchanged"
+			self._native_exec(cmd)
+			delete=prompt_user("Would you like to delete all of these files?\n"+str(matches))
+			
+		else:
+			delete=False
+
+		if(delete):
+			for each in matches:
+				gitRemove(each)				
+			gitCommitAll("Removed the files globbed by previous commit's .gitignore")
+
+
+
+
 
 #	Fix me: each object should have a getCfgString (make an abstract class for this eventually)	
 #	def generateRepoConfJson(self):
@@ -113,16 +229,22 @@ class Branch:
 	def __init__(self,repo,name,remotes=list(),cachemeta=False):
 		self.repo=repo
 		self.name=name
-		self.remotes=remotes
+		self.remotes=remotes#remotes to sync with
 		self.cache_meta=cachemeta
 		
-
+	
 	def getRepoExec(self):
 		return self.repo.getExecFunc()
 			
 	#accepts cmsg, and branch name		
 	def safeSyncBranch(self,**kwargs): #use kwargs
+	
+#		debug.log("""Alright, checking if we need to switch head refs...
 
+#			debug.log("""Switching head refs""")
+#			
+
+#if we do need to switch, we will first back up the current state of the current branch.
 		if(not self.repo.isClean()):
 			if(self.cache_meta):
 				debug.log("Metadata storage not yet implemented")
@@ -142,11 +264,7 @@ class Branch:
 
 		debug.log("""
 			Working tree clean. Local stack may have been pushed""")
-		
-#		debug.log("""Alright, checking if we need to switch head refs...
-
-#			debug.log("""Switching head refs""")
-#			
+	
 		for remote in self.remotes:	
 			remote.pullRebase()
 #			
@@ -165,8 +283,11 @@ class Branch:
 
 	
 
+"""
+Fixme: this should extend the git python Remote object, so that it can use those apis instead of re-implementing them
 
-class Remote:
+"""
+class RemoteUpstreamBranch:
 	def __init__(self,_exec,upstream_name,upstream_branch,writeable=False,**kwargs):
 		self.upstream_name=upstream_name
 		self.upstream_branch=upstream_branch
@@ -205,58 +326,14 @@ class Remote:
 
 """
 
-		if(isglobal):
-			globalflag=" --global "
-		else:
-			globalflag=" "
-		command=key+" "+value
-		command="git config "+globalflag+command
-		simple_exec(command,verbose=True)
+#Storage of old code that needs re-integration (garbage pile, some treassures in here though)
 
 
-def gitCommitOneFile(fileToAdd,msg="Single file commit"):
-	gitStashPush()
-	cmd="git checkout stash@{0} -- "+fileToAdd	
-	simple_exec(cmd)
-	if(not os.path.lexists(fileToAdd)):
-		abort("Cannot add file \""+fileToAdd+"\" does not exist")
-	gitAdd(fileToAdd)
-	cmd="git commit -m \""+msg+"\""
-	print_console(simple_exec(cmd))
-	gitStashPop()
-
-def destroy(path):
-	cmd= "git filter-branch --tree-filter 'rm -rf "+path+"' HEAD"
-	simple_exec(cmd)
-
-def gitPush(brname,remote):
-	cmd="git push "+remote+" "+brname
-	simple_exec(cmd)
 def addRemote(remote=list()):
 	cmd="git remote add "+remote[0]+" "+remote[1]
 	simple_exec(cmd)
-
-def gitRemove(filePath):
-	if(not os.path.lexists(filePath)):
-		abort("Cannot remove file \""+filePath+"\" does not exist")
-
-	cmd="git rm -rf "+filePath
-	simple_exec(cmd)
-
-def readRemotes():
-	output=simple_exec("git remote -v")
-	print_console(output)
-	remotes=list()
-	for line in output:
-		tokens=line.split("\t")
-		print_console(tokens)
-		if(len(tokens)>1 and tokens[1].find(" ")>=0):
-			remotes.append((tokens[0],tokens[1].split(" ")[0]))
-	print_console(remotes)
-	return remotes
-		
-		
 	
+		
 
 ##NOT DONE FIX ME
 def checkRemote(newRemote=list()):
@@ -298,59 +375,4 @@ def createRepo():
 
 	gitCommitAll('initialized git repository. Congratulations!')
 	simple_exec(cmd)
-
-def getGitRoot():
-	cmd="git config --get alias.root"
-	output =os.popen(cmd).read().strip()
-	print_console("Read git root as "+output)
-
-	if(not(os.path.lexists(output))):
-		abort("Getting git root failed")
-
-	return output
-
-def writeGitIgnore(line):
-	ignorepath=getGitRoot()+"/.gitignore"
-	gitignore=open(ignorepath,"a")
-	gitignore.write(line+"\n")
-	gitignore.flush()
-	gitignore.close()
-	gitCommitOneFile(ignorepath)
-
-def ignoreExpression(expression):
-	
-	from lib import prompt_user
-	import fnmatch
-	matches=list()
-
- 
-	rootPath = getGitRoot()
-	if(not os.path.isfile(expression)): 
-		for root, dirs, files in os.walk(rootPath):
-			for filename in files:
-				#print filename
-				if(fnmatch.fnmatch(filename, expression)):
-				#	print ('match'+filename)
-					matches.append(os.path.join(root, filename))
-	else:
-		matches.append(expression)#probably need to doctor the syntax here
-	
-	print_console("The following files match the expression:")	
-
-	print_console(matches)	
-	ignore=prompt_user("Would you like to ignore all of these files?")
-	
-	if(ignore):
-		writeGitIgnore(expression)		
-		cmd="git update-index --assume-unchanged"
-		simple_exec(cmd)
-		delete=prompt_user("Would you like to delete all of these files?\n"+str(matches))
-		
-	else:
-		delete=False
-
-	if(delete):
-		for each in matches:
-			gitRemove(each)				
-		gitCommitAll("Removed the files globbed by previous commit's .gitignore")
 """
