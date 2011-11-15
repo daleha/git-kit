@@ -128,7 +128,7 @@ class GKRepo(Repo):
 
 		
 	def gitCommitAll(self,cmsg):
-		cmd=["git", "commit", "-a", "-m", "\""+cmsg+"\""]
+		cmd=["git", "commit", "-a", "-m", cmsg]
 
 		try:
 			self._native_exec(cmd)
@@ -300,10 +300,10 @@ class Branch:
 			Working tree clean. Local stack may have been pushed""")
 	
 		for remote in self.remotes:	
-			remote.pullRebase()
+			gkremote=RemoteUpstreamBranch(repo,each)
 #			
-			if(remote.isWriteable()):
-				remote.push()
+			if(gkremote.isWriteable()):
+				gkremote.push()
 			
 
 #		debug.log("""Alright, checking if we need to switch head refs...
@@ -322,11 +322,10 @@ Fixme: this should extend the git python Remote object, so that it can use those
 
 """
 class RemoteUpstreamBranch(Remote):
-	def __init__(self,_exec,upstream_name,upstream_branch,writeable=False,**kwargs):
-		self.upstream_name=upstream_name
-		self.upstream_branch=upstream_branch
+	def __init__(self,baseremote,writeable=False,**kwargs):
+		self.upstream_name=baseremote.name
 		self.writeable=writeable
-		self._exec=_exec
+		self._exec=baseremote.repo.getExecFunc()
 		
 		if(kwargs.has_key("url")):
 			self.url=kwargs["url"]
