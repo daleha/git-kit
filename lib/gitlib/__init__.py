@@ -290,14 +290,7 @@ class Branch:
 				cmsg="Incremental Commit"
 
 			self.repo.gitCommitAll(cmsg)
-	
-		debug.log("""
-			You want me to sync "+brname+", but you migh have given me an 
-			unclean working tree ( hopefully you didn't).
-			Stashing your tree state.""")
 
-		debug.log("""
-			Working tree clean. Local stack may have been pushed""")
 	
 		for remote in self.remotes:	
 			gkremote=RemoteUpstreamBranch(remote,writeable=True)
@@ -310,8 +303,6 @@ class Branch:
 
 #			debug.log("""Switching head refs""")
 #		
-		debug.log("""
-			Alright, you've synch with the specified remotes. Now I'll restore your working tree""")	
 
 
 
