@@ -12,11 +12,18 @@ from git.exc import GitCommandError
 class GKRepo(Repo):
 
 
-	def __init__(self,path,name="gitkit_repo"):
-		super(GKRepo,self).__init__(path)
-		self.root=path
-		self.cmdrunner=self.git
-		self.name=name
+	def __init__(self,path=None,name="gitkit_repo",submodule=None):
+		if(not submodule):
+			super(GKRepo,self).__init__(path)
+			self.root=path
+			self.cmdrunner=self.git
+			self.name=name
+		else:
+			path=submodule.config_reader().get_value('path')
+			super(GKRepo,self).__init__(path)
+			self.root=path
+			self.cmdrunner=submodule.module().git
+			self.name=submodule.name
 
 	def _readRemotes(self):
 		for each in self.remotes:
@@ -190,6 +197,11 @@ class GKRepo(Repo):
 	"""
 	def syncAll(self,**kwargs):
 
+		for each in self.submodules:
+			subrepo=GKRepo(submodule=each)
+			subrepo.syncAll(cmsg=kwargs["cmsg"])
+			
+
 		for branch in self.branches:
 			toSync=Branch(self,branch)
 
@@ -275,16 +287,17 @@ class Branch:
 #			
 
 #if we do need to switch, we will first back up the current state of the current branch.
+		if(kwargs.has_key("cmsg")):
+			cmsg=kwargs["cmsg"]
+		else:
+			cmsg="Incremental Commit"
+
 		if(not self.repo.isClean()):
 			if(self.cache_meta):
 				debug.log("Metadata storage not yet implemented")
 				#import metastore
 				#metastore.store_metadata()	
-			if(kwargs.has_key("cmsg")):
-				cmsg=kwargs["cmsg"]
-			else:
-				cmsg="Incremental Commit"
-
+			
 			self.repo.gitCommitAll(cmsg)
 
 	
