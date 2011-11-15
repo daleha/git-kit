@@ -341,8 +341,10 @@ class RemoteUpstreamBranch:
 
 
 	def push(self):
-		debug.log("writing to remote "+self.upstream_name+" "+self.upstream_branch)
-		self._exec("git push "+self.upstream_name+" "+self.upstream_branch)
+
+		for branch in self.repo.listBranches():	
+			debug.log("writing to remote "+self.upstream_name+" "+branch)
+			self._exec("git push "+self.upstream_name+" "+branch)
 #
 		
 	
