@@ -196,9 +196,11 @@ class GKRepo(Repo):
 	Used to provide a means of synching a single branch in the repo
 	"""
 	def syncAll(self,**kwargs):
-
+		debug.log("Updating submodules")
+		self.submodule_update()
 		for each in self.submodules:
 			subrepo=GKRepo(submodule=each)
+			debug.log("Syncing submodule "+subrepo.name)
 			subrepo.syncAll(cmsg=kwargs["cmsg"])
 			
 
