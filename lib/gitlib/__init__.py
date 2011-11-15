@@ -325,6 +325,7 @@ class RemoteUpstreamBranch:
 	def __init__(self,baseremote,writeable=False,**kwargs):
 		self.upstream_name=baseremote.name
 		self.writeable=writeable
+		self.repo=baseremote.repo
 		self._exec=baseremote.repo.getExecFunc()
 		
 		if(kwargs.has_key("url")):
@@ -334,8 +335,8 @@ class RemoteUpstreamBranch:
 		return self.writeable
 
 	def pullRebase(self):
-			
-		self._exec("git pull --rebase "+self.upstream_name+" "+self.upstream_branch )
+		for branch in self.repo.listBranches():	
+			self._exec("git pull --rebase "+self.upstream_name+" "+branch )
 	
 
 
