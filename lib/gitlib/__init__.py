@@ -167,7 +167,7 @@ class GKRepo(Repo):
 		for each in self.branches:
 			branches.append(each)
 	
-		debug.log("got branches:",branches=branches)
+		#debug.log("got branches:",branches=branches)
 		return branches
 		
 	
@@ -177,8 +177,8 @@ class GKRepo(Repo):
 		for each in self.remotes:
 			remotes.append(each)
 	
-		debug.log("got remotes:",remotes=remotes)
-		print(type(remote))
+		#debug.log("got remotes:",remotes=remotes)
+		#print(type(remote))
 		return remotes
 
 	#is working tree clean?
