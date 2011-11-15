@@ -321,7 +321,7 @@ class Branch:
 Fixme: this should extend the git python Remote object, so that it can use those apis instead of re-implementing them
 
 """
-class RemoteUpstreamBranch(Remote):
+class RemoteUpstreamBranch:
 	def __init__(self,baseremote,writeable=False,**kwargs):
 		self.upstream_name=baseremote.name
 		self.writeable=writeable
