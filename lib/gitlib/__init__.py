@@ -322,12 +322,13 @@ class RemoteUpstreamBranch:
 		return self.writeable
 
 	def pullRebase(self,branch):
+			debug.log("Rebasing changes from remote "+self.upstream_name+" onto "+branch.name)
 			self._exec("git pull --rebase "+self.upstream_name+" "+branch.name )
 	
 
 
 	def push(self,branch):
-		if(self.writable):
+		if(self.writeable):
 			debug.log("writing to remote "+self.upstream_name+" "+branch.name)
 			self._exec("git push "+self.upstream_name+" "+branch.name)
 #
