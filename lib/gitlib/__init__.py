@@ -300,7 +300,7 @@ class Branch:
 			Working tree clean. Local stack may have been pushed""")
 	
 		for remote in self.remotes:	
-			gkremote=RemoteUpstreamBranch(self.repo,each)
+			gkremote=RemoteUpstreamBranch(remote)
 #			
 			if(gkremote.isWriteable()):
 				gkremote.push()
