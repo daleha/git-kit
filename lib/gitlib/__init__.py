@@ -6,7 +6,7 @@ import debug
 #3rd party includes
 from git import Git
 from git import Repo
-from git import Repo
+from git import Remote
 from git.exc import GitCommandError
 
 class GKRepo(Repo):
@@ -321,7 +321,7 @@ class Branch:
 Fixme: this should extend the git python Remote object, so that it can use those apis instead of re-implementing them
 
 """
-class RemoteUpstreamBranch:
+class RemoteUpstreamBranch(Remote):
 	def __init__(self,_exec,upstream_name,upstream_branch,writeable=False,**kwargs):
 		self.upstream_name=upstream_name
 		self.upstream_branch=upstream_branch
