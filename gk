@@ -46,7 +46,7 @@ def main(request):
 		if(action=="configure"):
 			cmds.gitConfigSetup(repo,args)
 		elif(action=="sync"):
-			cmds.safeSyncBranch(repo,args)
+			cmds.safeSyncAll(repo,args)
 		elif(action=="ignore"):
 			debug.log(args)
 			cmds.ignoreExpression(repo,args)

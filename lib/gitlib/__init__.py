@@ -188,12 +188,12 @@ class GKRepo(Repo):
 	"""
 	Used to provide a means of synching a single branch in the repo
 	"""
-	def syncBranch(self,**kwargs):
+	def syncAll(self,**kwargs):
 
+		for branch in self.branches:
+			toSync=Branch(self,branch)
 
-		toSync=Branch(self,kwargs["branch"],self.remotes)
-
-		toSync.safeSyncBranch(cmsg=kwargs["cmsg"])
+			toSync.safeSyncBranch(cmsg=kwargs["cmsg"])
 
 	"""
 	Accessor to exec function, for native calls on this repo
@@ -260,16 +260,12 @@ class GKRepo(Repo):
 
 class Branch:
 
-	def __init__(self,repo,name,remotes=list(),cachemeta=False):
+	def __init__(self,repo,basebranch,cachemeta=False):
 		self.repo=repo
-		self.name=name
-		self.remotes=remotes#remotes to sync with
+		self.name=basebranch.name
 		self.cache_meta=cachemeta
 		
-	
-	def getRepoExec(self):
-		return self.repo.getExecFunc()
-			
+
 	#accepts cmsg, and branch name		
 	def safeSyncBranch(self,**kwargs): #use kwargs
 	
@@ -292,11 +288,11 @@ class Branch:
 			self.repo.gitCommitAll(cmsg)
 
 	
-		for remote in self.remotes:	
+		for remote in self.repo.remotes:	
 			gkremote=RemoteUpstreamBranch(remote,writeable=True)
-#			
+			gkremote.pullRebase(self)
 			if(gkremote.isWriteable()):
-				gkremote.push()
+				gkremote.push(self)
 			
 
 #		debug.log("""Alright, checking if we need to switch head refs...
@@ -325,15 +321,13 @@ class RemoteUpstreamBranch:
 	def isWriteable(self):
 		return self.writeable
 
-	def pullRebase(self):
-		for branch in self.repo.listBranches():	
+	def pullRebase(self,branch):
 			self._exec("git pull --rebase "+self.upstream_name+" "+branch.name )
 	
 
 
-	def push(self):
-
-		for branch in self.repo.listBranches():	
+	def push(self,branch):
+		if(self.writable):
 			debug.log("writing to remote "+self.upstream_name+" "+branch.name)
 			self._exec("git push "+self.upstream_name+" "+branch.name)
 #

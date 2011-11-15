@@ -19,23 +19,14 @@ def gitConfigSetup(repo):
 """
 Safely sinc a single branch in a single repo
 """
-def safeSyncBranch(repo,args):
-
+def safeSyncAll(repo,args):
 
 	if(len(args)>0):
-		branch=args[0]	
-	else:
-		branch="master"
-
-	if(len(args)>1):
-		cmsg=args[1]	
+		cmsg=args[0]	
 	else:
 		cmsg="Incremental commit"
 
-	
-	debug.log("Syncing branch "+branch)
-
-	repo.syncBranch(cmsg=cmsg,branch=branch)
+	repo.syncAll(cmsg=cmsg)
 
 """
 Ignore an expression given in a format suitable for fnmatch, or else a
