@@ -31,7 +31,7 @@ def restorePerms(line,basepath=os.getcwd()):
 		os.chmod(fullpath,mask)
 #		print "permissions restored"
 	else:
-		debug.warn "path "+fullpath+" does not exist"
+		debug.warn ("path "+fullpath+" does not exist")
 	
 
 
@@ -48,7 +48,7 @@ def backupTime(file):
 		mtime=str(os.stat(file).st_mtime)
 		time=(atime,mtime)
 	else:
-		debug.warn "file "+file+" does not exist"
+		debug.warn ("file "+file+" does not exist")
 	
 	return time
 
