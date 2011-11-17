@@ -1,5 +1,5 @@
 #system includes
-import os
+import os,fnmatch
 
 import debug
 
@@ -179,6 +179,15 @@ class GKRepo(Repo):
 		
 	def getFiles(self):
 		return self.git.ls_files().split("\n")
+	
+	def gitAddAll(self):
+
+		rootPath = self.root
+
+		for root, dirs, files in os.walk(rootPath):
+		#	for filename in fnmatch.filter(files, pattern):
+			for filename in files:
+				print( os.path.join(root, filename))	
 
 	def backupMetadata(self):
 		import metastore
@@ -330,6 +339,7 @@ class GKBranch:
 			debug.log("Caching metadata")
 			self.repo.backupMetadata()
 		
+		self.repo.gitAddAll()
 		self.repo.gitCommitAll(cmsg)
 
 	
