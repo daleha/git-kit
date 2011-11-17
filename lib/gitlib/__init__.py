@@ -177,6 +177,9 @@ class GKRepo(Repo):
 			#ripple this change to all remotes
 			pass
 		
+	def getFiles(self):
+		return self.git.ls_files().split("\n")
+
 	def backupMetadata(self):
 		import metastore
 		metastore.backupMetaData(self)
@@ -344,9 +347,6 @@ class GKBranch:
 #			debug.log("""Switching head refs""")
 #		
 
-
-	def getFiles(self):
-		return self.git.ls_files().split("\n")
 
 	def safeUpdateBranch(self,cmsg):	
 
