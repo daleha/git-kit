@@ -17,8 +17,8 @@ def getRepos():
 	for repocfg in getRepoConfigs():
 		repos.append(GKRepo(repocfg))
 
-	repoconf=GKRepoConfig()
-	repos.append(GKRepo(repoconf))
+#	repoconf=GKRepoConfig()
+#	repos.append(GKRepo(repoconf))
 
 	return repos
 
@@ -179,7 +179,6 @@ class GKRepo(Repo):
 		
 	def backupMetadata(self):
 		import metastore
-		
 		metastore.backupMetaData(self)
 	
 	def restoreMetadata(self):
