@@ -61,7 +61,7 @@ def backupMetaData(repo,timeCachePath=".git_cache_time",permCachePath=".git_cach
 
 	debug.log("Backing up metadata for repo "+repo.name)	
 
-	for line in repo.getFiles().split("\n"):
+	for line in repo.getFiles():
 		filepath=os.path.join(basepath,line)
 
 		if(os.path.exists(filepath)):
