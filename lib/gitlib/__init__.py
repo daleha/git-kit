@@ -325,7 +325,7 @@ class GKBranch:
 
 		if(self.cachemeta):
 			debug.log("Caching metadata")
-			self.repo.backupMetaData()
+			self.repo.backupMetadata()
 		
 		self.repo.gitCommitAll(cmsg)
 
@@ -356,7 +356,7 @@ class GKBranch:
 
 
 		if(self.cache_meta):
-			repo.backupMetaData()
+			repo.backupMetadata()
 			
 		self.repo.gitCommitAll(cmsg)
 	#switch to each	
