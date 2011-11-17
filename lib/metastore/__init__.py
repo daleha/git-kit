@@ -57,7 +57,7 @@ def backupMetaData(repo,timeCachePath=".git_cache_time",permCachePath=".git_cach
 
 	basepath=repo.root
 
-	cwd=os.chdir(path)
+	cwd=os.chdir(basepath)
 
 	debug.log("Backing up metadata for repo "+repo.name)	
 
