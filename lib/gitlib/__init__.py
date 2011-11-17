@@ -47,8 +47,20 @@ class GKRepo(Repo):
 
 			
 	def _loadConfig(self,repoconfig):
+		#load data for new remotes, assuming default values	
+		for remote in self.remotes:
+			default=GKRemoteConfig()
+			default.readConfigFromRemote(remote)
+			self.gkremotes[remote.name]=GKRemote(self,default)
+	
+		#load data for new branches, assuming default values	
+		for branch in self.branches:
+			default=GKBranchConfig()
+			default.readConfigFromBranch(branch)
+			self.gkbranches[branch.name]=GKBranch(self,default)
 
-		if(repoconfig!=None):
+
+		if(repoconfig!=None):#override default values here
 			remoteCfgs=repoconfig.getRemoteConfigs()
 			
 			#load stored remotes
@@ -65,18 +77,6 @@ class GKRepo(Repo):
 				conf.readConfigFromJson(branch,branchCfgs[branch])
 				self.gkbranches[branch]=GKBranch(self,conf)
 		
-		#load data for new remotes, assuming default values	
-		for remote in self.remotes:
-			default=GKRemoteConfig()
-			default.readConfigFromRemote(remote)
-			self.gkremotes[remote.name]=GKRemote(self,default)
-	
-		#load data for new branches, assuming default values	
-		for branch in self.branches:
-			default=GKBranchConfig()
-			default.readConfigFromBranch(branch)
-			self.gkbranches[branch.name]=GKBranch(self,default)
-
 
 
 	def _readRemotes(self):
