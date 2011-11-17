@@ -25,7 +25,7 @@ def getRepos():
 class GKRepo(Repo):
 
 
-	def __init__(self,repoconfig=None,submodule=None):
+	def __init__(self,repoconfig=None,submodule=None,parent=None):
 		
 		if(not submodule):
 			path=repoconfig.repopath
@@ -36,7 +36,7 @@ class GKRepo(Repo):
 		else:
 			path=submodule.config_reader().get_value('path')
 			super(GKRepo,self).__init__(path)
-			self.root=path
+			self.root=os.path.join(parent.root,path)
 			self.cmdrunner=submodule.module().git
 			self.name=submodule.name
 
@@ -181,13 +181,7 @@ class GKRepo(Repo):
 		return self.git.ls_files().split("\n")
 	
 	def gitAddAll(self):
-
-		rootPath = self.root
-
-		for root, dirs, files in os.walk(rootPath):
-		#	for filename in fnmatch.filter(files, pattern):
-			for filename in files:
-				print( os.path.join(root, filename))	
+		self._addFile(self.root)
 
 	def backupMetadata(self):
 		import metastore
@@ -241,7 +235,7 @@ class GKRepo(Repo):
 		debug.log("Updating submodules")
 		self.submodule_update()
 		for each in self.submodules:
-			subrepo=GKRepo(submodule=each)
+			subrepo=GKRepo(submodule=each,parent=self)
 			debug.log("Syncing submodule "+subrepo.name)
 			subrepo.syncAll(cmsg=kwargs["cmsg"])
 			
