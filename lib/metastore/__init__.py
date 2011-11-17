@@ -67,7 +67,7 @@ def backupMetaData(repo,timeCachePath=".git_cache_time",permCachePath=".git_cach
 		if(os.path.exists(filepath)):
 
 			times=backupTime(filepath)
-			mode = os.stat(path)[ST_MODE]
+			mode = os.stat(filepath)[ST_MODE]
 			timestamp=(line+","+times[0]+","+times[1]+"\n")
 			permstamp=backupPerms(line,mode)
 			timecache.write(timestamp)
