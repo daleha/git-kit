@@ -57,7 +57,8 @@ def backupMetaData(repo,timeCachePath=".git_cache_time",permCachePath=".git_cach
 
 	basepath=repo.root
 
-	cwd=os.chdir(basepath)
+	cwd=os.getcwd()
+	os.chdir(basepath)
 
 	timecache=open(os.path.join(basepath,timeCachePath),"w")
 	permcache=open(os.path.join(basepath,permCachePath),"w")
