@@ -9,21 +9,75 @@ from git import Repo
 from git import Remote
 from git.exc import GitCommandError
 
+
+from gkconfig import *
+
+def getRepos():
+	repos=list()
+	for repocfg in getRepoConfigs():
+		repos.append(GKRepo(repocfg))
+
+	repoconf=GKRepoConfig()
+	repos.append(GKRepo(repoconf))
+
+	return repos
+
 class GKRepo(Repo):
 
 
-	def __init__(self,path=None,name="gitkit_repo",submodule=None):
+	def __init__(self,repoconfig=None,submodule=None):
+		
 		if(not submodule):
+			path=repoconfig.repopath
 			super(GKRepo,self).__init__(path)
 			self.root=path
 			self.cmdrunner=self.git
-			self.name=name
+			self.name=repoconfig.reponame
 		else:
 			path=submodule.config_reader().get_value('path')
 			super(GKRepo,self).__init__(path)
 			self.root=path
 			self.cmdrunner=submodule.module().git
 			self.name=submodule.name
+
+		self.gkbranches=dict()
+		self.gkremotes=dict()
+
+		self._loadConfig(repoconfig)
+
+			
+	def _loadConfig(self,repoconfig):
+
+		if(repoconfig!=None):
+			remoteCfgs=repoconfig.getRemoteConfigs()
+			
+			#load stored remotes
+			for remote in remoteCfgs:
+				conf=GKRemoteConfig()
+				conf.readConfigFromJson(remote,remoteCfgs[remote])
+				self.gkremotes[remote]=GKRemote(self,conf)
+	
+			branchCfgs=repoconfig.getBranchConfigs()
+
+			#load stored branches
+			for branch in branchCfgs:
+				conf=GKBranchConfig()
+				conf.readConfigFromJson(branch,branchCfgs[branch])
+				self.gkbranches[branch]=GKBranch(self,conf)
+		
+		#load data for new remotes, assuming default values	
+		for remote in self.remotes:
+			default=GKRemoteConfig()
+			default.readConfigFromRemote(remote)
+			self.gkremotes[remote.name]=GKRemote(self,default)
+	
+		#load data for new branches, assuming default values	
+		for branch in self.branches:
+			default=GKBranchConfig()
+			default.readConfigFromBranch(branch)
+			self.gkbranches[branch.name]=GKBranch(self,default)
+
+
 
 	def _readRemotes(self):
 		for each in self.remotes:
@@ -67,6 +121,7 @@ class GKRepo(Repo):
 			self._native_exec(cmd)
 	
 		self._addFile(fileToAdd)
+
 		cmd=["git", "commit", "-m", msg]
 		debug.log(self._native_exec(cmd))
 		if(not wasClean):
@@ -122,7 +177,17 @@ class GKRepo(Repo):
 			#ripple this change to all remotes
 			pass
 		
+	def backupMetadata(self):
+		import metastore
+		
+		metastore.backupMetaData(self)
+	
+	def restoreMetadata(self):
+		import metastore
+		
+		metastore.restoreMetaData(self)
 
+			
 
 
 	def gitStashPush(self):
@@ -143,51 +208,17 @@ class GKRepo(Repo):
 			debug.warn("There was nothing to do")
 
 
-
-
-	
-	def getConfig(self):	
-		from git import GitConfigParser
-		debug.log(self.configpath)
-		return GitConfigParser(self.configpath)._sections
-
-
-	"""
-	Will be used to call the repo object serializer, and update the repo by key in config file using config calls to json
-	"""
-	def writeConfig():
-		pass
-
-	"""
-	Will be used to call add config params to repo config
-	"""
-	def writeToConfig(self,key,value,isglobal=True):
-		pass
-
-	"""
-
-	List available branches in the repo as branch objects
-	"""
-	def listBranches(self):
-		branches = list()
-
-		for each in self.branches:
-			branches.append(each)
-	
-		#debug.log("got branches:",branches=branches)
-		return branches
+	def addWorkingTree(self):
+		cwd=os.getcwd()
+		os.chdir(cwd)
 		
-	
-	def listRemotes(self):
-		remotes = list()
+		for each in os.path.listdir(self.root):
+			self._addFile(each)
 
-		for each in self.remotes:
-			remotes.append(each)
-	
-		#debug.log("got remotes:",remotes=remotes)
-		#print(type(remote))
-		return remotes
+		os.chdir(cwd)
 
+
+	
 	#is working tree clean?
 	def isClean(self):
 		return not self.is_dirty()
@@ -204,10 +235,27 @@ class GKRepo(Repo):
 			subrepo.syncAll(cmsg=kwargs["cmsg"])
 			
 
-		for branch in self.branches:
-			toSync=Branch(self,branch)
-
+		for branch in self.gkbranches:
+			toSync=self.gkbranches[branch]
 			toSync.safeSyncBranch(cmsg=kwargs["cmsg"])
+
+	def safeUpdate():
+		cmsg="Performed gitkit safe update"
+		debug.log("Performing update on repo "+self.name)
+
+	
+
+		self.gitCommitAll()
+
+		for each in self.submodules:#recurse down into all *tracked* submodules	
+			debug.log("Updating submodule "+subrepo.name)
+			subrepo.syncAll(cmsg)
+			
+
+		for branch in self.branches:
+			toSync=Branch(self,branchcfg)
+			toSync.safeUpdateBranch(cmsg)
+
 
 	"""
 	Accessor to exec function, for native calls on this repo
@@ -254,30 +302,12 @@ class GKRepo(Repo):
 			
 
 
+class GKBranch:
 
-#	Fix me: each object should have a getCfgString (make an abstract class for this eventually)	
-#	def generateRepoConfJson(self):
-#		debug.log("Generating config for repository "+self.name)
-#
-#		localbranches=self.listBranches()
-#		remotes = self.listRemotes()
-#		self.remoteRefs= list()
-#
-#		
-#		for remote in remotes:
-#			remote.fetch()
-#			debug.log("Remote: "+remote.url)
-#			for ref in remote.refs:
-#				self.remoteRefs.append(ref)
-#				debug.log("\t"+ref.remote_name+":"+ref.remote_head)
-
-
-class Branch:
-
-	def __init__(self,repo,basebranch,cachemeta=False):
+	def __init__(self,repo,branchcfg):
 		self.repo=repo
-		self.name=basebranch.name
-		self.cache_meta=cachemeta
+		self.name=branchcfg.name
+		self.cachemeta=branchcfg.cachemeta
 		
 
 	#accepts cmsg, and branch name		
@@ -294,20 +324,20 @@ class Branch:
 		else:
 			cmsg="Incremental Commit"
 
-		if(not self.repo.isClean()):
-			if(self.cache_meta):
-				debug.log("Metadata storage not yet implemented")
-				#import metastore
-				#metastore.store_metadata()	
-			
-			self.repo.gitCommitAll(cmsg)
+		if(self.cachemeta):
+			debug.log("Caching metadata")
+			repo.backupMetaData()
+		
+		self.repo.gitCommitAll(cmsg)
 
 	
-		for remote in self.repo.remotes:	
-			gkremote=RemoteUpstreamBranch(remote,writeable=True)
-			gkremote.pullRebase(self)
-			if(gkremote.isWriteable()):
-				gkremote.push(self)
+		for remote in self.repo.gkremotes:	
+			toSync=self.repo.gkremotes[remote]
+			toSync.pullRebase(self)
+			if(toSync.isWriteable()):
+				toSync.push(self)
+			else:
+				debug.warn("Remote :"+toSync.name+" is not writeable - cannot sync!")
 			
 
 #		debug.log("""Alright, checking if we need to switch head refs...
@@ -316,36 +346,61 @@ class Branch:
 #		
 
 
+	def getFiles(self):
+		return self.git.ls_files().split("\n")
+
+	def safeUpdateBranch(self,cmsg):	
+
+		if(not self.repo.isClean()):
+			warn("Staging area not clean: you will lose all pending changes to tracked content.")
+
+
+
+		if(self.cache_meta):
+			repo.backupMetaData()
+			
+		self.repo.gitCommitAll(cmsg)
+	#switch to each	
 
 	
+		for remote in self.repo.gkremotes:	
+			toUpdate=self.repo.gkrepotes[remote]
+			toUpdate.pullRebase(self)
+		
+	def safeCheckout(self):	
+		self.repo.gitAddAll()
+		self.repo.gitCommitAll()	
+
+
+	def _checkout(self):
+		self.repo.git.checkout(self.name)		
 
 """
 Fixme: this should extend the git python Remote object, so that it can use those apis instead of re-implementing them
 
 """
-class RemoteUpstreamBranch:
-	def __init__(self,baseremote,writeable=False,**kwargs):
-		self.upstream_name=baseremote.name
-		self.writeable=writeable
-		self.repo=baseremote.repo
-		self._exec=baseremote.repo.getExecFunc()
+class GKRemote:
+	def __init__(self,repo,remoteconfig):
+	#read config	
+		self.name=remoteconfig.name
+		self.writeable=remoteconfig.writeable
+		self.repo=repo
+		self._exec=repo.getExecFunc()
 		
-		if(kwargs.has_key("url")):
-			self.url=kwargs["url"]
 
 	def isWriteable(self):
 		return self.writeable
 
 	def pullRebase(self,branch):
-			debug.log("Rebasing changes from remote "+self.upstream_name+" onto "+branch.name)
-			self._exec("git pull --rebase "+self.upstream_name+" "+branch.name )
+			debug.log("Rebasing changes from remote "+self.name+" onto "+branch.name)
+			self._exec("git pull --rebase "+self.name+" "+branch.name )
 	
 
 
 	def push(self,branch):
 		if(self.writeable):
-			debug.log("writing to remote "+self.upstream_name+" "+branch.name)
-			self._exec("git push "+self.upstream_name+" "+branch.name)
+			debug.log("writing to remote "+self.name+" "+branch.name)
+			self._exec("git push "+self.name+" "+branch.name)
 #
 		
 	
@@ -371,31 +426,6 @@ def addRemote(remote=list()):
 	simple_exec(cmd)
 	
 		
-
-##NOT DONE FIX ME
-def checkRemote(newRemote=list()):
-	currRemotes=readRemotes()
-	rc=False
-	for each in currRemotes:
-		if (each[0]==newRemote[0] and each[1]==newRemote[1]):
-			rc=True
-	#rc=false means remote did not match
-	return rc
-			
-
-	
-
-def branchExists(brname):
-	output=	simple_exec("git branch -v")
-	for line in output:
-		if (line.find(brname)>=0):
-			print_console ("Local branch "+brname+" exists")
-			return True
-		else:
-			self.warn("Branch "+brname+" is not a local branch")
-			return False
-			
-	
 
 	
 

@@ -11,22 +11,28 @@ Please put all global namespace imports at the bottom of the file.
 """
 Run setup on a repository to start using it with gitkit, and configure various settings
 """
-def gitConfigSetup(repo):
+def gitConfigSetup(repos):
 	from setup import setup_gitconfig
 
 	setup_gitconfig(repo)
 
+
+def safeUpdate(repos,args):#todo: use args to selectively update/sync
+	for repo in repos:
+		repo.safeUpdate()
+
 """
 Safely sinc a single branch in a single repo
 """
-def safeSyncAll(repo,args):
+def safeSyncAll(repos,args):
+	for repo in repos:
 
-	if(len(args)>0):
-		cmsg=args[0]	
-	else:
-		cmsg="Incremental commit"
+		if(len(args)>0):
+			cmsg=args[0]	
+		else:
+			cmsg="Incremental commit"
 
-	repo.syncAll(cmsg=cmsg)
+		repo.syncAll(cmsg=cmsg)
 
 """
 Ignore an expression given in a format suitable for fnmatch, or else a
@@ -43,10 +49,10 @@ def ignoreExpression(repo,args):
 """
 Provide a list of high level opis to the user
 """	
-def _handHold(repo,**kwargs):
+def _handHold(repos,**kwargs):
 	global METHODS
 	handhold=prompt_user("No arguments eh? Want some help?")
-	if(not handHold):
+	if(not handhold):
 		return
 	choice=prompt_user("Enter choice from: ",isbool=False,opts=METHODS)
 	

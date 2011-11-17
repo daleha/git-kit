@@ -28,11 +28,14 @@ def main(request):
 	debug.label("Bootstrapping completed")
 	debug.log("Got request: ",request=request)
 
-	from gitlib import GKRepo
 
-	pathname=os.path.dirname(sys.argv[0])
-	abspath= os.path.abspath(pathname)
-	repo=GKRepo(abspath)
+	debug.log("Loading repo configurations")
+
+	from gitlib import GKRepo
+	from gitlib import getRepos
+
+	repos=getRepos()
+
 
 	#todo: add config check for default config options	
 	if (len(request)!=0):
@@ -44,20 +47,33 @@ def main(request):
 			args=list()
 
 		if(action=="configure"):
-			cmds.gitConfigSetup(repo,args)
+			cmds.gitConfigSetup(repos,args)
 		elif(action=="sync"):
-			cmds.safeSyncAll(repo,args)
+			cmds.safeSyncAll(repos,args)
+		elif(action=="update"):
+			cmds.safeUpdate(repos,args)
 		elif(action=="ignore"):
-			debug.log(args)
-			cmds.ignoreExpression(repo,args)
+			cmds.ignoreExpression(repos,args)
 		elif(action=="help"):
 			printHelp()
 		elif(action=="_handhold"):
-			cmds._handHold(repo)		
+			cmds._handHold(repos)		
 		else:
-			cmds._handHold(repo)		
-	
+			cmds._handHold(repos)		
 
+	import gkconfig
+	for repo in repos:
+		debug.log("Writing config for repo:"+repo.name)
+		gkconfig.writeRepoToJson(repo)
+		
+	
+"""
+Todo: daemon mode,
+	-fetch (but do not apply!) changes for all branches in background (speed boost)
+	-syncdaemon: continuously sync (like dropbox)
+
+	-create/destroy action wrappers
+"""	
 			
 
 def init_boot_strap():
