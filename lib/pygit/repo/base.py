@@ -679,7 +679,7 @@ class Repo(object):
 		# END windows handling 
 		
 		try:
-			git.clone(url, path, **kwargs)
+			pygit.clone(url, path, **kwargs)
 		finally:
 			if prev_cwd is not None:
 				os.chdir(prev_cwd)
@@ -724,7 +724,7 @@ class Repo(object):
 		:param to_path: Path to which the repository should be cloned to
 		:param kwargs: see the ``clone`` method
 		:return: Repo instance pointing to the cloned directory"""
-		return cls._clone(GitPy(os.getcwd()), url, to_path, GitCmdObjectDB, **kwargs)
+		return cls._clone(GitPy(os.getcwd()), url, to_path, GitPyCmdObjectDB, **kwargs)
 
 	def archive(self, ostream, treeish=None, prefix=None,  **kwargs):
 		"""Archive the tree at the given revision.

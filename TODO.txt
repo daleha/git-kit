@@ -1,5 +1,14 @@
 Critical Todo:
 
+-Thorough testing on ccu, 
+-Make a "workspacedir" option, make paths relative to that by default (but still alow absolute paths")
+
+-ignore must take a single repo (make current directory if it is repo by default)
+-Daemon mode
+
+
+
+
 -Gk ignore - fix the plumbing
 -Initialize hooks already present in repo  to each project (get hook repo [HOOKDIR - .hook assumed])
 	-gk hook [HOOKDIR - .hook assumed]
