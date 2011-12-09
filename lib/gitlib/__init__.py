@@ -4,7 +4,7 @@ import os,fnmatch
 import debug
 
 #3rd party includes
-from git import GitPy
+from git import Git
 from git import Repo
 from git import Remote
 from git.exc import GitCommandError

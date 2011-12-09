@@ -14,7 +14,7 @@ from git.config import GitPyConfigParser
 from git.remote import Remote
 from git.db import (
 				GitPyCmdObjectDB, 
-				GitPyDB
+				GitDB
 				)
 
 

@@ -13,7 +13,7 @@ from gitdb.util import (
 							bin_to_hex, 
 							hex_to_bin
 						)
-from gitdb.db import GitPyDB
+from gitdb.db import GitDB
 from gitdb.db import LooseObjectDB
 
 
