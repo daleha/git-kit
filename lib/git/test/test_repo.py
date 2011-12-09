@@ -575,7 +575,7 @@ class TestRepo(TestBase):
 		
 		
 	def test_repo_odbtype(self):
-		target_type = GitPyDB
+		target_type = GitDB
 		if sys.version_info[1] < 5:
 			target_type = GitPyCmdObjectDB
 		assert isinstance(self.rorepo.odb, target_type)
