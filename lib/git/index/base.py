@@ -1,7 +1,7 @@
 # index.py
 # Copyright (C) 2008, 2009 Michael Trier (mtrier@gmail.com) and contributors
 #
-# This module is part of GitPython and is released under
+# This module is part of GitPyPython and is released under
 # the BSD License: http://www.opensource.org/licenses/bsd-license.php
 import tempfile
 import os
@@ -28,7 +28,7 @@ import git.objects
 import git.diff as diff
 
 from git.exc import (
-							GitCommandError,
+							GitPyCommandError,
 							CheckoutError
 						)
 
@@ -232,7 +232,7 @@ class IndexFile(LazyMixin, diff.Diffable, Serializable):
 			self ( containing the merge and possibly unmerged entries in case of
 			conflicts )
 
-		:raise GitCommandError:
+		:raise GitPyCommandError:
 			If there is a merge conflict. The error will
 			be raised at the first conflicting path. If you want to have proper
 			merge resolution to be done by yourself, you have to commit the changed
@@ -833,7 +833,7 @@ class IndexFile(LazyMixin, diff.Diffable, Serializable):
 			actual destination. Relative to the repository root.
 
 		:raise ValueErorr: If only one item was given
-			GitCommandError: If git could not handle your request"""
+			GitPyCommandError: If git could not handle your request"""
 		args = list()
 		if skip_errors:
 			args.append('-k')
@@ -932,7 +932,7 @@ class IndexFile(LazyMixin, diff.Diffable, Serializable):
 			hence it will checkout as many files as it can anyway.
 			If one of files or directories do not exist in the index
 			( as opposed to the	 original git command who ignores them ).
-			Raise GitCommandError if error lines could not be parsed - this truly is
+			Raise GitPyCommandError if error lines could not be parsed - this truly is
 			an exceptional state
 			
 		.. note:: The checkout is limited to checking out the files in the 
@@ -979,7 +979,7 @@ class IndexFile(LazyMixin, diff.Diffable, Serializable):
 				# END for each possible ending
 			# END for each line
 			if unknown_lines:
-				raise GitCommandError(("git-checkout-index", ), 128, stderr)
+				raise GitPyCommandError(("git-checkout-index", ), 128, stderr)
 			if failed_files:
 				valid_files = list(set(iter_checked_out_files) - set(failed_files))
 				raise CheckoutError("Some files could not be checked out from the index due to local modifications", failed_files, valid_files, failed_reasons)
@@ -1009,7 +1009,7 @@ class IndexFile(LazyMixin, diff.Diffable, Serializable):
 			kwargs['as_process'] = True
 			kwargs['istream'] = subprocess.PIPE
 			proc = self.repo.git.checkout_index(args, **kwargs)
-			make_exc = lambda : GitCommandError(("git-checkout-index",)+tuple(args), 128, proc.stderr.read())
+			make_exc = lambda : GitPyCommandError(("git-checkout-index",)+tuple(args), 128, proc.stderr.read())
 			checked_out_files = list()
 
 			for path in paths:

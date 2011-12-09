@@ -18,7 +18,7 @@ from git.util import (
 
 from git.config import SectionConstraint
 from git.exc import (
-					InvalidGitRepositoryError, 
+					InvalidGitPyRepositoryError, 
 					NoSuchPathError
 					)
 
@@ -116,7 +116,7 @@ class Submodule(util.IndexObject, Iterable, Traversable):
 		""":return: all the submodules of our module repository"""
 		try:
 			return type(self).list_items(item.module())
-		except InvalidGitRepositoryError:
+		except InvalidGitPyRepositoryError:
 			return list()
 		# END handle intermeditate items
 		
@@ -224,7 +224,7 @@ class Submodule(util.IndexObject, Iterable, Traversable):
 		:note: works atomically, such that no change will be done if the repository
 			update fails for instance"""
 		if repo.bare:
-			raise InvalidGitRepositoryError("Cannot add submodules to bare repositories")
+			raise InvalidGitPyRepositoryError("Cannot add submodules to bare repositories")
 		# END handle bare repos
 		
 		path = to_native_path_linux(path)
@@ -364,7 +364,7 @@ class Submodule(util.IndexObject, Iterable, Traversable):
 				#END handle end
 				progress.update(op, i, len_rmts, prefix+"Done fetching remote of submodule %r" % self.name)
 			#END fetch new data
-		except InvalidGitRepositoryError:
+		except InvalidGitPyRepositoryError:
 			if not init:
 				return self
 			# END early abort if init is not allowed
@@ -562,7 +562,7 @@ class Submodule(util.IndexObject, Iterable, Traversable):
 					nentry = git.IndexEntry(entry[:3]+(module_path,)+entry[4:])
 					index.entries[tekey] = nentry
 				except KeyError:
-					raise InvalidGitRepositoryError("Submodule's entry at %r did not exist" % (self.path))
+					raise InvalidGitPyRepositoryError("Submodule's entry at %r did not exist" % (self.path))
 				#END handle submodule doesn't exist
 				
 				# update configuration
@@ -604,7 +604,7 @@ class Submodule(util.IndexObject, Iterable, Traversable):
 			we would usually throw
 		:return: self
 		:note: doesn't work in bare repositories
-		:raise InvalidGitRepositoryError: thrown if the repository cannot be deleted
+		:raise InvalidGitPyRepositoryError: thrown if the repository cannot be deleted
 		:raise OSError: if directories or files could not be removed"""
 		if not (module + configuration):
 			raise ValueError("Need to specify to delete at least the module, or the configuration")
@@ -634,7 +634,7 @@ class Submodule(util.IndexObject, Iterable, Traversable):
 				# verify we may delete our module
 				mod = self.module()
 				if mod.is_dirty(untracked_files=True):
-					raise InvalidGitRepositoryError("Cannot delete module at %s with any modifications, unless force is specified" % mod.working_tree_dir)
+					raise InvalidGitPyRepositoryError("Cannot delete module at %s with any modifications, unless force is specified" % mod.working_tree_dir)
 				# END check for dirt
 				
 				# figure out whether we have new commits compared to the remotes
@@ -650,7 +650,7 @@ class Submodule(util.IndexObject, Iterable, Traversable):
 					# END for each remote ref
 					# not a single remote branch contained all our commits
 					if num_branches_with_new_commits == len(rrefs):
-						raise InvalidGitRepositoryError("Cannot delete module at %s as there are new commits" % mod.working_tree_dir)
+						raise InvalidGitPyRepositoryError("Cannot delete module at %s as there are new commits" % mod.working_tree_dir)
 					# END handle new commits
 					# have to manually delete references as python's scoping is 
 					# not existing, they could keep handles open ( on windows this is a problem )
@@ -762,7 +762,7 @@ class Submodule(util.IndexObject, Iterable, Traversable):
 	@unbare_repo
 	def module(self):
 		""":return: Repo instance initialized from the repository at our submodule path
-		:raise InvalidGitRepositoryError: if a repository was not available. This could 
+		:raise InvalidGitPyRepositoryError: if a repository was not available. This could 
 			also mean that it was not yet initialized"""
 		# late import to workaround circular dependencies
 		module_path = self.abspath 
@@ -771,10 +771,10 @@ class Submodule(util.IndexObject, Iterable, Traversable):
 			if repo != self.repo:
 				return repo
 			# END handle repo uninitialized
-		except (InvalidGitRepositoryError, NoSuchPathError):
-			raise InvalidGitRepositoryError("No valid repository at %s" % self.path)
+		except (InvalidGitPyRepositoryError, NoSuchPathError):
+			raise InvalidGitPyRepositoryError("No valid repository at %s" % self.path)
 		else:
-			raise InvalidGitRepositoryError("Repository at %r was not yet checked out" % module_path)
+			raise InvalidGitPyRepositoryError("Repository at %r was not yet checked out" % module_path)
 		# END handle exceptions
 		
 	def module_exists(self):
@@ -819,7 +819,7 @@ class Submodule(util.IndexObject, Iterable, Traversable):
 	@property
 	def branch(self):
 		""":return: The branch instance that we are to checkout
-		:raise InvalidGitRepositoryError: if our module is not yet checked out"""
+		:raise InvalidGitPyRepositoryError: if our module is not yet checked out"""
 		return mkhead(self.module(), self._branch_path)
 	
 	@property
@@ -909,7 +909,7 @@ class Submodule(util.IndexObject, Iterable, Traversable):
 					entry = index.entries[index.entry_key(p, 0)]
 					sm = Submodule(repo, entry.binsha, entry.mode, entry.path)
 				except KeyError:
-					raise InvalidGitRepositoryError("Gitmodule path %r did not exist in revision of parent commit %s" % (p, parent_commit))
+					raise InvalidGitPyRepositoryError("Gitmodule path %r did not exist in revision of parent commit %s" % (p, parent_commit))
 				# END handle keyerror
 			# END handle critical error
 			

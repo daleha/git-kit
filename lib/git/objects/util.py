@@ -1,7 +1,7 @@
 # util.py
 # Copyright (C) 2008, 2009 Michael Trier (mtrier@gmail.com) and contributors
 #
-# This module is part of GitPython and is released under
+# This module is part of GitPyPython and is released under
 # the BSD License: http://www.opensource.org/licenses/bsd-license.php
 """Module for general utility functions"""
 from git.util import (
@@ -61,7 +61,7 @@ def get_object_type_by_name(object_type_name):
 		
 def utctz_to_altz(utctz):
 	"""we convert utctz to the timezone in seconds, it is the format time.altzone
-	returns. Git stores it as UTC timezone which has the opposite sign as well, 
+	returns. GitPy stores it as UTC timezone which has the opposite sign as well, 
 	which explains the -1 * ( that was made explicit here )
 	:param utctz: git utc timezone string, i.e. +0200"""
 	return -1 * int(float(utctz)/100*3600)
@@ -96,7 +96,7 @@ def parse_date(string_date):
 	"""
 	Parse the given date as one of the following
 	
-		* Git internal format: timestamp offset
+		* GitPy internal format: timestamp offset
 		* RFC 2822: Thu, 07 Apr 2005 22:13:13 +0200. 
 		* ISO 8601 2005-04-07T22:13:13
 			The T can be a space as well

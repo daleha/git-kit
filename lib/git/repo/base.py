@@ -1,20 +1,20 @@
 # repo.py
 # Copyright (C) 2008, 2009 Michael Trier (mtrier@gmail.com) and contributors
 #
-# This module is part of GitPython and is released under
+# This module is part of GitPyPython and is released under
 # the BSD License: http://www.opensource.org/licenses/bsd-license.php
 
-from git.exc import InvalidGitRepositoryError, NoSuchPathError
-from git.cmd import Git
+from git.exc import InvalidGitPyRepositoryError, NoSuchPathError
+from git.cmd import GitPy
 from git.util import Actor
 from git.refs import *
 from git.index import IndexFile
 from git.objects import *
-from git.config import GitConfigParser
+from git.config import GitPyConfigParser
 from git.remote import Remote
 from git.db import (
-				GitCmdObjectDB, 
-				GitDB
+				GitPyCmdObjectDB, 
+				GitPyDB
 				)
 
 
@@ -34,9 +34,9 @@ import os
 import sys
 import re
 
-DefaultDBType = GitDB
+DefaultDBType = GitPyDB
 if sys.version_info[1] < 5:		# python 2.4 compatiblity
-	DefaultDBType = GitCmdObjectDB
+	DefaultDBType = GitPyCmdObjectDB
 # END handle python 2.4
 
 
@@ -84,7 +84,7 @@ class Repo(object):
 		:param odbt: Object DataBase type - a type which is constructed by providing 
 			the directory containing the database objects, i.e. .git/objects. It will
 			be used to access all object data
-		:raise InvalidGitRepositoryError:
+		:raise InvalidGitPyRepositoryError:
 		:raise NoSuchPathError:
 		:return: git.Repo """
 		epath = os.path.abspath(os.path.expandvars(os.path.expanduser(path or os.getcwd())))
@@ -114,7 +114,7 @@ class Repo(object):
 		# END while curpath
 		
 		if self.git_dir is None:
-		   raise InvalidGitRepositoryError(epath)
+		   raise InvalidGitPyRepositoryError(epath)
 
 		self._bare = False
 		try:
@@ -130,11 +130,11 @@ class Repo(object):
 		# END working dir handling
 		
 		self.working_dir = self._working_tree_dir or self.git_dir
-		self.git = Git(self.working_dir)
+		self.git = GitPy(self.working_dir)
 		
 		# special handling, in special times
 		args = [join(self.git_dir, 'objects')]
-		if issubclass(odbt, GitCmdObjectDB):
+		if issubclass(odbt, GitPyCmdObjectDB):
 			args.append(self.git)
 		self.odb = odbt(*args)
 
@@ -329,7 +329,7 @@ class Repo(object):
 	def config_reader(self, config_level=None):
 		"""
 		:return:
-			GitConfigParser allowing to read the full git configuration, but not to write it
+			GitPyConfigParser allowing to read the full git configuration, but not to write it
 			
 			The configuration will include values from the system, user and repository 
 			configuration files.
@@ -346,12 +346,12 @@ class Repo(object):
 			files = [ self._get_config_path(f) for f in self.config_level ]
 		else:
 			files = [ self._get_config_path(config_level) ]
-		return GitConfigParser(files, read_only=True)
+		return GitPyConfigParser(files, read_only=True)
 		
 	def config_writer(self, config_level="repository"):
 		"""
 		:return:
-			GitConfigParser allowing to write values of the specified configuration file level.
+			GitPyConfigParser allowing to write values of the specified configuration file level.
 			Config writers should be retrieved, used to change the configuration ,and written 
 			right away as they will lock the configuration file in question and prevent other's
 			to write it.
@@ -361,7 +361,7 @@ class Repo(object):
 			system = sytem wide configuration file
 			global = user level configuration file
 			repository = configuration file for this repostory only"""
-		return GitConfigParser(self._get_config_path(config_level), read_only = False)
+		return GitPyConfigParser(self._get_config_path(config_level), read_only = False)
 		
 	def commit(self, rev=None):
 		"""The Commit object for the specified revision
@@ -647,7 +647,7 @@ class Repo(object):
 			os.makedirs(path, 0755)
 
 		# git command automatically chdir into the directory
-		git = Git(path)
+		git = GitPy(path)
 		output = git.init(**kwargs)
 		return Repo(path)
 
@@ -662,7 +662,7 @@ class Repo(object):
 		odbt = kwargs.pop('odbt', odb_default_type)
 		if os.name == 'nt':
 			if '~' in path:
-				raise OSError("Git cannot handle the ~ character in path %r correctly" % path)
+				raise OSError("GitPy cannot handle the ~ character in path %r correctly" % path)
 				
 			# on windows, git will think paths like c: are relative and prepend the 
 			# current working dir ( before it fails ). We temporarily adjust the working 
@@ -724,7 +724,7 @@ class Repo(object):
 		:param to_path: Path to which the repository should be cloned to
 		:param kwargs: see the ``clone`` method
 		:return: Repo instance pointing to the cloned directory"""
-		return cls._clone(Git(os.getcwd()), url, to_path, GitCmdObjectDB, **kwargs)
+		return cls._clone(GitPy(os.getcwd()), url, to_path, GitCmdObjectDB, **kwargs)
 
 	def archive(self, ostream, treeish=None, prefix=None,  **kwargs):
 		"""Archive the tree at the given revision.
@@ -736,7 +736,7 @@ class Repo(object):
 			NOTE: Use the 'format' argument to define the kind of format. Use 
 			specialized ostreams to write any format supported by python
 
-		:raise GitCommandError: in case something went wrong
+		:raise GitPyCommandError: in case something went wrong
 		:return: self"""
 		if treeish is None:
 			treeish = self.head.commit

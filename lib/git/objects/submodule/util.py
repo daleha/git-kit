@@ -1,6 +1,6 @@
 import git
-from git.exc import InvalidGitRepositoryError
-from git.config import GitConfigParser
+from git.exc import InvalidGitPyRepositoryError
+from git.config import GitPyConfigParser
 from StringIO import StringIO
 import weakref
 
@@ -23,11 +23,11 @@ def mkhead(repo, path):
 	return git.Head(repo, git.Head.to_full_path(path))
 	
 def unbare_repo(func):
-	"""Methods with this decorator raise InvalidGitRepositoryError if they 
+	"""Methods with this decorator raise InvalidGitPyRepositoryError if they 
 	encounter a bare repository"""
 	def wrapper(self, *args, **kwargs):
 		if self.repo.bare:
-			raise InvalidGitRepositoryError("Method '%s' cannot operate on bare repositories" % func.__name__)
+			raise InvalidGitPyRepositoryError("Method '%s' cannot operate on bare repositories" % func.__name__)
 		#END bare method
 		return func(self, *args, **kwargs)
 	# END wrapper
@@ -35,7 +35,7 @@ def unbare_repo(func):
 	return wrapper
 	
 def find_first_remote_branch(remotes, branch_name):
-	"""Find the remote branch matching the name of the given branch or raise InvalidGitRepositoryError"""
+	"""Find the remote branch matching the name of the given branch or raise InvalidGitPyRepositoryError"""
 	for remote in remotes:
 		try:
 			return remote.refs[branch_name]
@@ -43,14 +43,14 @@ def find_first_remote_branch(remotes, branch_name):
 			continue
 		# END exception handling
 	#END for remote
-	raise InvalidGitRepositoryError("Didn't find remote branch %r in any of the given remotes", branch_name)
+	raise InvalidGitPyRepositoryError("Didn't find remote branch %r in any of the given remotes", branch_name)
 	
 #} END utilities
 
 
 #{ Classes
 
-class SubmoduleConfigParser(GitConfigParser):
+class SubmoduleConfigParser(GitPyConfigParser):
 	"""
 	Catches calls to _write, and updates the .gitmodules blob in the index
 	with the new data, if we have written into a stream. Otherwise it will 

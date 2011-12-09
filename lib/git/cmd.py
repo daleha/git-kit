@@ -1,12 +1,12 @@
 ﻿# cmd.py
 # Copyright (C) 2008, 2009 Michael Trier (mtrier@gmail.com) and contributors
 #
-# This module is part of GitPython and is released under
+# This module is part of GitPyPython and is released under
 # the BSD License: http://www.opensource.org/licenses/bsd-license.php
 
 import os, sys
 from util import *
-from exc import GitCommandError
+from exc import GitPyCommandError
 
 from subprocess import (
 							call, 
@@ -14,25 +14,25 @@ from subprocess import (
 							PIPE
 						)
 
-# Enables debugging of GitPython's git commands
+# Enables debugging of GitPyPython's git commands
 GIT_PYTHON_TRACE = os.environ.get("GIT_PYTHON_TRACE", False)
 
 execute_kwargs = ('istream', 'with_keep_cwd', 'with_extended_output',
 				  'with_exceptions', 'as_process', 
 				  'output_stream' )
 
-__all__ = ('Git', )
+__all__ = ('GitPy', )
 
 def dashify(string):
 	return string.replace('_', '-')
 
-class Git(object):
+class GitPy(object):
 	"""
-	The Git class manages communication with the Git binary.
+	The GitPy class manages communication with the Git binary.
 	
-	It provides a convenient interface to calling the Git binary, such as in::
+	It provides a convenient interface to calling the GitPy binary, such as in::
 	
-	 g = Git( git_dir )
+	 g = GitPy( git_dir )
 	 g.init()					# calls 'git init' program
 	 rval = g.ls_files()		# calls 'git ls-files' program
 	
@@ -86,10 +86,10 @@ class Git(object):
 		def wait(self):
 			"""Wait for the process and return its status code. 
 			
-			:raise GitCommandError: if the return status is not 0"""
+			:raise GitPyCommandError: if the return status is not 0"""
 			status = self.proc.wait()
 			if status != 0:
-				raise GitCommandError(self.args, status, self.proc.stderr.read())
+				raise GitPyCommandError(self.args, status, self.proc.stderr.read())
 			# END status handling 
 			return status
 	# END auto interrupt
@@ -199,11 +199,11 @@ class Git(object):
 		"""Initialize this instance with:
 		
 		:param working_dir:
-		   Git directory we should work in. If None, we always work in the current 
+		   GitPy directory we should work in. If None, we always work in the current 
 		   directory as returned by os.getcwd().
 		   It is meant to be the working tree directory if available, or the 
 		   .git directory in case of bare repositories."""
-		super(Git, self).__init__()
+		super(GitPy, self).__init__()
 		self._working_dir = working_dir
 		
 		# cached command slots
@@ -220,7 +220,7 @@ class Git(object):
 
 	@property
 	def working_dir(self):
-		""":return: Git directory we are working on"""
+		""":return: GitPy directory we are working on"""
 		return self._working_dir
 
 	def execute(self, command,
@@ -285,7 +285,7 @@ class Git(object):
 			* output_stream if extended_output = False
 			* tuple(int(status), output_stream, str(stderr)) if extended_output = True
 			
-		:raise GitCommandError:
+		:raise GitPyCommandError:
 		
 		:note:
 		   If you add additional keyword arguments to the signature of this method, 
@@ -349,7 +349,7 @@ class Git(object):
 		# END handle debug printing
 
 		if with_exceptions and status != 0:
-			raise GitCommandError(command, status, stderr_value)
+			raise GitPyCommandError(command, status, stderr_value)
 
 		# Allow access to the command's status code
 		if with_extended_output:

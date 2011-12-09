@@ -1,7 +1,7 @@
 # test_config.py
 # Copyright (C) 2008, 2009 Michael Trier (mtrier@gmail.com) and contributors
 #
-# This module is part of GitPython and is released under
+# This module is part of GitPyPython and is released under
 # the BSD License: http://www.opensource.org/licenses/bsd-license.php
 
 from git.test.lib import *
@@ -26,14 +26,14 @@ class TestBase(TestCase):
         for filename in ("git_config", "git_config_global"):
             file_obj = self._to_memcache(fixture_path(filename))
             file_obj_orig = copy(file_obj)
-            w_config = GitConfigParser(file_obj, read_only = False)
+            w_config = GitPyConfigParser(file_obj, read_only = False)
             w_config.read()                 # enforce reading
             assert w_config._sections
             w_config.write()                # enforce writing
             assert file_obj.getvalue() == file_obj_orig.getvalue()
             
             # creating an additional config writer must fail due to exclusive access
-            self.failUnlessRaises(IOError, GitConfigParser, file_obj, read_only = False)
+            self.failUnlessRaises(IOError, GitPyConfigParser, file_obj, read_only = False)
             
             # should still have a lock and be able to make changes
             assert w_config._lock._has_lock()
@@ -55,7 +55,7 @@ class TestBase(TestCase):
             assert w_config.get_value(sname_new, oname_new) == ival
             
             file_obj.seek(0)
-            r_config = GitConfigParser(file_obj, read_only=True)
+            r_config = GitPyConfigParser(file_obj, read_only=True)
             assert r_config.has_section(sname)
             assert r_config.has_option(sname, oname)
             assert r_config.get(sname, oname) == val
@@ -65,7 +65,7 @@ class TestBase(TestCase):
     def test_base(self):
         path_repo = fixture_path("git_config")
         path_global = fixture_path("git_config_global")
-        r_config = GitConfigParser([path_repo, path_global], read_only=True)
+        r_config = GitPyConfigParser([path_repo, path_global], read_only=True)
         assert r_config.read_only
         num_sections = 0
         num_options = 0

@@ -1,7 +1,7 @@
 # test_repo.py
 # Copyright (C) 2008, 2009 Michael Trier (mtrier@gmail.com) and contributors
 #
-# This module is part of GitPython and is released under
+# This module is part of GitPyPython and is released under
 # the BSD License: http://www.opensource.org/licenses/bsd-license.php
 from git.test.lib import *
 from git import *
@@ -17,7 +17,7 @@ from cStringIO import StringIO
 
 class TestRepo(TestBase):
 	
-	@raises(InvalidGitRepositoryError)
+	@raises(InvalidGitPyRepositoryError)
 	def test_new_should_raise_on_invalid_repo_location(self):
 		Repo(tempfile.gettempdir())
 
@@ -242,7 +242,7 @@ class TestRepo(TestBase):
 		self.rorepo.archive(tmpfile, '0.1.5')
 		assert tmpfile.tell()
 		
-	@patch_object(Git, '_call_process')
+	@patch_object(GitPy, '_call_process')
 	def test_should_display_blame_information(self, git):
 		git.return_value = fixture('blame')
 		b = self.rorepo.blame( 'master', 'lib/git.py')
@@ -342,11 +342,11 @@ class TestRepo(TestBase):
 		# full size
 		# size is without terminating newline
 		def mkfull():
-			return Git.CatFileContentStream(len(d)-1, StringIO(d))
+			return GitPy.CatFileContentStream(len(d)-1, StringIO(d))
 			
 		ts = 5
 		def mktiny():
-			return Git.CatFileContentStream(ts, StringIO(d))
+			return GitPy.CatFileContentStream(ts, StringIO(d))
 		
 		# readlines no limit
 		s = mkfull()
@@ -575,9 +575,9 @@ class TestRepo(TestBase):
 		
 		
 	def test_repo_odbtype(self):
-		target_type = GitDB
+		target_type = GitPyDB
 		if sys.version_info[1] < 5:
-			target_type = GitCmdObjectDB
+			target_type = GitPyCmdObjectDB
 		assert isinstance(self.rorepo.odb, target_type)
 			
 	def test_submodules(self):
@@ -591,7 +591,7 @@ class TestRepo(TestBase):
 	def test_submodule_update(self, rwrepo):
 		# fails in bare mode
 		rwrepo._bare = True
-		self.failUnlessRaises(InvalidGitRepositoryError, rwrepo.submodule_update)
+		self.failUnlessRaises(InvalidGitPyRepositoryError, rwrepo.submodule_update)
 		rwrepo._bare = False
 		
 		# test create submodule

@@ -1,13 +1,13 @@
 # exc.py
 # Copyright (C) 2008, 2009 Michael Trier (mtrier@gmail.com) and contributors
 #
-# This module is part of GitPython and is released under
+# This module is part of GitPyPython and is released under
 # the BSD License: http://www.opensource.org/licenses/bsd-license.php
 """ Module containing all exceptions thrown througout the git package, """
 
 from gitdb.exc import *
 
-class InvalidGitRepositoryError(Exception):
+class InvalidGitPyRepositoryError(Exception):
 	""" Thrown if the given repository appears to have an invalid format.  """
 
 
@@ -15,7 +15,7 @@ class NoSuchPathError(OSError):
 	""" Thrown if a path could not be access by the system. """
 
 
-class GitCommandError(Exception):
+class GitPyCommandError(Exception):
 	""" Thrown if execution of the git command fails with non-zero status code. """
 	def __init__(self, command, status, stderr=None):
 		self.stderr = stderr

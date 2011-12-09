@@ -1,4 +1,4 @@
-# This module is part of GitPython and is released under
+# This module is part of GitPyPython and is released under
 # the BSD License: http://www.opensource.org/licenses/bsd-license.php
 
 from git.test.lib import *
@@ -49,10 +49,10 @@ class TestSubmodule(TestBase):
 		# size is always 0
 		assert sm.size == 0
 		# the module is not checked-out yet
-		self.failUnlessRaises(InvalidGitRepositoryError, sm.module)
+		self.failUnlessRaises(InvalidGitPyRepositoryError, sm.module)
 		
 		# which is why we can't get the branch either - it points into the module() repository
-		self.failUnlessRaises(InvalidGitRepositoryError, getattr, sm, 'branch')
+		self.failUnlessRaises(InvalidGitPyRepositoryError, getattr, sm, 'branch')
 		
 		# branch_path works, as its just a string
 		assert isinstance(sm.branch_path, basestring)
@@ -71,7 +71,7 @@ class TestSubmodule(TestBase):
 		new_smclone_path = None				# keep custom paths for later 
 		new_csmclone_path = None				# 
 		if rwrepo.bare:
-			self.failUnlessRaises(InvalidGitRepositoryError, sm.config_writer)
+			self.failUnlessRaises(InvalidGitPyRepositoryError, sm.config_writer)
 		else:
 			writer = sm.config_writer()
 			# for faster checkout, set the url to the local path
@@ -105,12 +105,12 @@ class TestSubmodule(TestBase):
 		##############
 		# module retrieval is not always possible
 		if rwrepo.bare:
-			self.failUnlessRaises(InvalidGitRepositoryError, sm.module)
-			self.failUnlessRaises(InvalidGitRepositoryError, sm.remove)
-			self.failUnlessRaises(InvalidGitRepositoryError, sm.add, rwrepo, 'here', 'there')
+			self.failUnlessRaises(InvalidGitPyRepositoryError, sm.module)
+			self.failUnlessRaises(InvalidGitPyRepositoryError, sm.remove)
+			self.failUnlessRaises(InvalidGitPyRepositoryError, sm.add, rwrepo, 'here', 'there')
 		else:
 			# its not checked out in our case
-			self.failUnlessRaises(InvalidGitRepositoryError, sm.module)
+			self.failUnlessRaises(InvalidGitPyRepositoryError, sm.module)
 			assert not sm.module_exists()
 			
 			# currently there is only one submodule
@@ -240,11 +240,11 @@ class TestSubmodule(TestBase):
 			csm.set_parent_commit(csm.repo.head.commit)
 			sm.config_writer().set_value("somekey", "somevalue")
 			csm.config_writer().set_value("okey", "ovalue")
-			self.failUnlessRaises(InvalidGitRepositoryError, sm.remove)
+			self.failUnlessRaises(InvalidGitPyRepositoryError, sm.remove)
 			# if we remove the dirty index, it would work
 			sm.module().index.reset()
 			# still, we have the file modified
-			self.failUnlessRaises(InvalidGitRepositoryError, sm.remove, dry_run=True)
+			self.failUnlessRaises(InvalidGitPyRepositoryError, sm.remove, dry_run=True)
 			sm.module().index.reset(working_tree=True)
 			
 			# this would work
@@ -256,7 +256,7 @@ class TestSubmodule(TestBase):
 			# but ... we have untracked files in the child submodule
 			fn = join_path_native(csm.module().working_tree_dir, "newfile")
 			open(fn, 'w').write("hi")
-			self.failUnlessRaises(InvalidGitRepositoryError, sm.remove)
+			self.failUnlessRaises(InvalidGitPyRepositoryError, sm.remove)
 			
 			# forcibly delete the child repository
 			assert csm.remove(force=True) is csm
@@ -419,11 +419,11 @@ class TestSubmodule(TestBase):
 		
 		# update fails as list_items in such a situations cannot work, as it cannot
 		# find the entry at the changed path
-		self.failUnlessRaises(InvalidGitRepositoryError, rm.update, recursive=False)
+		self.failUnlessRaises(InvalidGitPyRepositoryError, rm.update, recursive=False)
 		
 		# move it properly - doesn't work as it its path currently points to an indexentry
 		# which doesn't exist ( move it to some path, it doesn't matter here )
-		self.failUnlessRaises(InvalidGitRepositoryError, sm.move, pp)
+		self.failUnlessRaises(InvalidGitPyRepositoryError, sm.move, pp)
 		# reset the path(cache) to where it was, now it works
 		sm.path = prep
 		sm.move(fp, module=False)		# leave it at the old location

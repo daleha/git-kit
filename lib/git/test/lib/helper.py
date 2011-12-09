@@ -1,12 +1,12 @@
 # helper.py
 # Copyright (C) 2008, 2009 Michael Trier (mtrier@gmail.com) and contributors
 #
-# This module is part of GitPython and is released under
+# This module is part of GitPyPython and is released under
 # the BSD License: http://www.opensource.org/licenses/bsd-license.php
 
 import os
 import sys
-from git import Repo, Remote, GitCommandError
+from git import Repo, Remote, GitPyCommandError
 from unittest import TestCase
 import tempfile
 import shutil
@@ -177,7 +177,7 @@ def with_rw_and_rw_remote_repo(working_tree_ref):
 			# try to list remotes to diagnoes whether the server is up
 			try:
 				rw_repo.git.ls_remote(d_remote)
-			except GitCommandError,e:
+			except GitPyCommandError,e:
 				print str(e)
 				if os.name == 'nt':
 					raise AssertionError('git-daemon needs to run this test, but windows does not have one. Otherwise, run: git-daemon "%s"'%tempfile.gettempdir()) 

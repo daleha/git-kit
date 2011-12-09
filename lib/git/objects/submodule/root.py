@@ -2,7 +2,7 @@ from base import Submodule, UpdateProgress
 from util import (
 					find_first_remote_branch
 				)
-from git.exc import InvalidGitRepositoryError
+from git.exc import InvalidGitPyRepositoryError
 import git
 
 import sys
@@ -77,7 +77,7 @@ class RootModule(Submodule):
 		:param dry_run: if True, operations will not actually be performed. Progress messages
 			will change accordingly to indicate the WOULD DO state of the operation."""
 		if self.repo.bare:
-			raise InvalidGitRepositoryError("Cannot update submodules in bare repositories")
+			raise InvalidGitPyRepositoryError("Cannot update submodules in bare repositories")
 		# END handle bare
 		
 		if progress is None:
@@ -203,7 +203,7 @@ class RootModule(Submodule):
 									# and its okay to fail here
 									# Alternatively we could just generate a unique name and leave all
 									# existing ones in place
-									raise InvalidGitRepositoryError("Couldn't find original remote-repo at url %r" % psm.url)
+									raise InvalidGitPyRepositoryError("Couldn't find original remote-repo at url %r" % psm.url)
 								#END handle one single remote
 							# END handle check we found a remote
 							
@@ -273,7 +273,7 @@ class RootModule(Submodule):
 							if len(smm.git.cherry(tbr, psm.branch)) == 0:
 								psm.branch.delete(smm, psm.branch)
 							#END delete original tracking branch if there are no changes
-						except InvalidGitRepositoryError:
+						except InvalidGitPyRepositoryError:
 							# ignore it if the previous branch couldn't be found in the
 							# current remotes, this just means we can't handle it
 							pass

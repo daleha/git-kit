@@ -1,7 +1,7 @@
 # base.py
 # Copyright (C) 2008, 2009 Michael Trier (mtrier@gmail.com) and contributors
 #
-# This module is part of GitPython and is released under
+# This module is part of GitPyPython and is released under
 # the BSD License: http://www.opensource.org/licenses/bsd-license.php
 from git.util import LazyMixin, join_path_native, stream_copy
 from util import get_object_type_by_name

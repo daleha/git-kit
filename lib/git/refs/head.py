@@ -5,7 +5,7 @@ from git.config import SectionConstraint
 
 from git.util import join_path
 
-from git.exc import GitCommandError
+from git.exc import GitPyCommandError
 
 __all__ = ["HEAD", "Head"]
 
@@ -62,7 +62,7 @@ class HEAD(SymbolicReference):
 			mode = "--mixed"
 			
 			# it appears, some git-versions declare mixed and paths deprecated
-			# see http://github.com/Byron/GitPython/issues#issue/2
+			# see http://github.com/Byron/GitPyPython/issues#issue/2
 			if paths:
 				mode = None
 			# END special case
@@ -81,7 +81,7 @@ class HEAD(SymbolicReference):
 		
 		try:
 			self.repo.git.reset(mode, commit, add_arg, paths, **kwargs)
-		except GitCommandError, e:
+		except GitPyCommandError, e:
 			# git nowadays may use 1 as status to indicate there are still unstaged
 			# modifications after the reset
 			if e.status != 1:
@@ -196,7 +196,7 @@ class Head(Reference):
 		
 		:param force:
 			If True, changes to the index and the working tree will be discarded.
-			If False, GitCommandError will be raised in that situation.
+			If False, GitPyCommandError will be raised in that situation.
 			
 		:param kwargs:
 			Additional keyword arguments to be passed to git checkout, i.e.

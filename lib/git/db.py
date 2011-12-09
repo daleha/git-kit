@@ -1,6 +1,6 @@
 """Module with our own gitdb implementation - it uses the git command"""
 from exc import (
-					GitCommandError, 
+					GitPyCommandError, 
 					BadObject
 				)
 
@@ -13,14 +13,14 @@ from gitdb.util import (
 							bin_to_hex, 
 							hex_to_bin
 						)
-from gitdb.db import GitDB
+from gitdb.db import GitPyDB
 from gitdb.db import LooseObjectDB
 
 
-__all__ = ('GitCmdObjectDB', 'GitDB' )
+__all__ = ('GitPyCmdObjectDB', 'GitDB' )
 
-#class GitCmdObjectDB(CompoundDB, ObjectDBW):
-class GitCmdObjectDB(LooseObjectDB):
+#class GitPyCmdObjectDB(CompoundDB, ObjectDBW):
+class GitPyCmdObjectDB(LooseObjectDB):
 	"""A database representing the default git object store, which includes loose 
 	objects, pack files and an alternates file
 	
@@ -30,7 +30,7 @@ class GitCmdObjectDB(LooseObjectDB):
 	"""
 	def __init__(self, root_path, git):
 		"""Initialize this instance with the root and a git command"""
-		super(GitCmdObjectDB, self).__init__(root_path)
+		super(GitPyCmdObjectDB, self).__init__(root_path)
 		self._git = git
 		
 	def info(self, sha):
@@ -54,7 +54,7 @@ class GitCmdObjectDB(LooseObjectDB):
 		try:
 			hexsha, typename, size = self._git.get_object_header(partial_hexsha)
 			return hex_to_bin(hexsha)
-		except (GitCommandError, ValueError):
+		except (GitPyCommandError, ValueError):
 			raise BadObject(partial_hexsha)
 		# END handle exceptions
 	

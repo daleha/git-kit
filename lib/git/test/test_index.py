@@ -1,7 +1,7 @@
 # test_index.py
 # Copyright (C) 2008, 2009 Michael Trier (mtrier@gmail.com) and contributors
 #
-# This module is part of GitPython and is released under
+# This module is part of GitPyPython and is released under
 # the BSD License: http://www.opensource.org/licenses/bsd-license.php
 
 from git.test.lib import *
@@ -197,13 +197,13 @@ class TestIndex(TestBase):
 		# a three way merge would result in a conflict and fails as the command will 
 		# not overwrite any entries in our index and hence leave them unmerged. This is 
 		# mainly a protection feature as the current index is not yet in a tree
-		self.failUnlessRaises(GitCommandError, index.merge_tree, next_commit, base=parent_commit)
+		self.failUnlessRaises(GitPyCommandError, index.merge_tree, next_commit, base=parent_commit)
 		
 		# the only way to get the merged entries is to safe the current index away into a tree, 
 		# which is like a temporary commit for us. This fails as well as the NULL sha deos not
 		# have a corresponding object
 		# NOTE: missing_ok is not a kwarg anymore, missing_ok is always true
-		# self.failUnlessRaises(GitCommandError, index.write_tree)
+		# self.failUnlessRaises(GitPyCommandError, index.write_tree)
 		
 		# if missing objects are okay, this would work though ( they are always okay now )
 		tree = index.write_tree()
@@ -553,7 +553,7 @@ class TestIndex(TestBase):
 		self.failUnlessRaises(ValueError, index.move, ['just_one_path'])
 		# file onto existing file
 		files = ['AUTHORS', 'LICENSE']
-		self.failUnlessRaises(GitCommandError, index.move, files)
+		self.failUnlessRaises(GitPyCommandError, index.move, files)
 		
 		# again, with force 
 		assert_mv_rval(index.move(files, f=True))

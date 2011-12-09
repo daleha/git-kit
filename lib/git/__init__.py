@@ -1,7 +1,7 @@
 # __init__.py
 # Copyright (C) 2008, 2009 Michael Trier (mtrier@gmail.com) and contributors
 #
-# This module is part of GitPython and is released under
+# This module is part of GitPyPython and is released under
 # the BSD License: http://www.opensource.org/licenses/bsd-license.php
 
 import os
@@ -30,13 +30,13 @@ _init_externals()
 
 #{ Imports
 
-from git.config import GitConfigParser
+from git.config import GitPyConfigParser
 from git.objects import *
 from git.refs import *
 from git.diff import *
 from git.exc import *
 from git.db import *
-from git.cmd import Git
+from git.cmd import GitPy
 from git.repo import Repo
 from git.remote import *
 from git.index import *

@@ -1,7 +1,7 @@
 # test_refs.py
 # Copyright (C) 2008, 2009 Michael Trier (mtrier@gmail.com) and contributors
 #
-# This module is part of GitPython and is released under
+# This module is part of GitPyPython and is released under
 # the BSD License: http://www.opensource.org/licenses/bsd-license.php
 
 from mock import *
@@ -170,7 +170,7 @@ class TestRefs(TestBase):
 		cur_head.reset(cur_head, paths = "test")
 		cur_head.reset(new_head_commit, paths = "lib")
 		# hard resets with paths don't work, its all or nothing
-		self.failUnlessRaises(GitCommandError, cur_head.reset, new_head_commit, working_tree=True, paths = "lib")
+		self.failUnlessRaises(GitPyCommandError, cur_head.reset, new_head_commit, working_tree=True, paths = "lib")
 		
 		# we can do a mixed reset, and then checkout from the index though
 		cur_head.reset(new_head_commit)
@@ -236,7 +236,7 @@ class TestRefs(TestBase):
 			
 			# rename with force
 			tmp_head = Head.create(rw_repo, "tmphead")
-			self.failUnlessRaises(GitCommandError, tmp_head.rename, new_head)
+			self.failUnlessRaises(GitPyCommandError, tmp_head.rename, new_head)
 			tmp_head.rename(new_head, force=True)
 			assert tmp_head == new_head and tmp_head.object == new_head.object
 			
@@ -254,7 +254,7 @@ class TestRefs(TestBase):
 		# tag ref
 		tag_name = "1.0.2"
 		light_tag = TagReference.create(rw_repo, tag_name)
-		self.failUnlessRaises(GitCommandError, TagReference.create, rw_repo, tag_name)
+		self.failUnlessRaises(GitPyCommandError, TagReference.create, rw_repo, tag_name)
 		light_tag = TagReference.create(rw_repo, tag_name, "HEAD~1", force = True)
 		assert isinstance(light_tag, TagReference)
 		assert light_tag.name == tag_name
@@ -348,7 +348,7 @@ class TestRefs(TestBase):
 		
 		# create a new branch that is likely to touch the file we changed
 		far_away_head = rw_repo.create_head("far_head",'HEAD~100')
-		self.failUnlessRaises(GitCommandError, far_away_head.checkout)
+		self.failUnlessRaises(GitPyCommandError, far_away_head.checkout)
 		assert active_branch == active_branch.checkout(force=True)
 		assert rw_repo.head.reference != far_away_head
 		

@@ -1,7 +1,7 @@
 # config.py
 # Copyright (C) 2008, 2009 Michael Trier (mtrier@gmail.com) and contributors
 #
-# This module is part of GitPython and is released under
+# This module is part of GitPyPython and is released under
 # the BSD License: http://www.opensource.org/licenses/bsd-license.php
 """Module containing module parser implementation able to properly read and write
 configuration files"""
@@ -15,7 +15,7 @@ import cStringIO
 from git.odict import OrderedDict
 from git.util import LockFile
 
-__all__ = ('GitConfigParser', 'SectionConstraint')
+__all__ = ('GitPyConfigParser', 'SectionConstraint')
 
 class MetaParserBuilder(type):
 	"""Utlity class wrapping base-class methods into decorators that assure read-only properties"""
@@ -97,7 +97,7 @@ class SectionConstraint(object):
 		return self._config
 		
 
-class GitConfigParser(cp.RawConfigParser, object):
+class GitPyConfigParser(cp.RawConfigParser, object):
 	"""Implements specifics required to read git style configuration files.
 	
 	This variation behaves much like the git.config command such that the configuration
@@ -146,7 +146,7 @@ class GitConfigParser(cp.RawConfigParser, object):
 		:param read_only:
 			If True, the ConfigParser may only read the data , but not change it.
 			If False, only a single file path or file object may be given."""
-		super(GitConfigParser, self).__init__()
+		super(GitPyConfigParser, self).__init__()
 		# initialize base with ordered dictionaries to be sure we write the same 
 		# file back 
 		self._sections = OrderedDict()
@@ -183,7 +183,7 @@ class GitConfigParser(cp.RawConfigParser, object):
 			try:
 				self.write()
 			except IOError,e:
-				print "Exception during destruction of GitConfigParser: %s" % str(e)
+				print "Exception during destruction of GitPyConfigParser: %s" % str(e)
 		finally:
 			self._lock._release_lock()
 	
@@ -353,7 +353,7 @@ class GitConfigParser(cp.RawConfigParser, object):
 	@set_dirty_and_flush_changes
 	def add_section(self, section):
 		"""Assures added options will stay in order"""
-		super(GitConfigParser, self).add_section(section)
+		super(GitPyConfigParser, self).add_section(section)
 		self._sections[section] = OrderedDict()
 		
 	@property

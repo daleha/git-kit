@@ -5,8 +5,8 @@ import shutil
 import tempfile
 
 from git.db import (
-						GitCmdObjectDB,
-						GitDB
+						GitPyCmdObjectDB,
+						GitPyDB
 					)
 
 from git import (
@@ -54,8 +54,8 @@ class TestBigRepoR(TestBase):
 	def setUpAll(cls):
 		super(TestBigRepoR, cls).setUpAll()
 		repo_path = resolve_or_fail(k_env_git_repo)
-		cls.gitrorepo = Repo(repo_path, odbt=GitCmdObjectDB)
-		cls.puregitrorepo = Repo(repo_path, odbt=GitDB)
+		cls.gitrorepo = Repo(repo_path, odbt=GitPyCmdObjectDB)
+		cls.puregitrorepo = Repo(repo_path, odbt=GitPyDB)
 
 
 class TestBigRepoRW(TestBigRepoR):
@@ -68,8 +68,8 @@ class TestBigRepoRW(TestBigRepoR):
 		super(TestBigRepoRW, cls).setUpAll()
 		dirname = tempfile.mktemp()
 		os.mkdir(dirname)
-		cls.gitrwrepo = cls.gitrorepo.clone(dirname, shared=True, bare=True, odbt=GitCmdObjectDB)
-		cls.puregitrwrepo = Repo(dirname, odbt=GitDB)
+		cls.gitrwrepo = cls.gitrorepo.clone(dirname, shared=True, bare=True, odbt=GitPyCmdObjectDB)
+		cls.puregitrwrepo = Repo(dirname, odbt=GitPyDB)
 	
 	@classmethod
 	def tearDownAll(cls):

@@ -1,13 +1,13 @@
 # diff.py
 # Copyright (C) 2008, 2009 Michael Trier (mtrier@gmail.com) and contributors
 #
-# This module is part of GitPython and is released under
+# This module is part of GitPyPython and is released under
 # the BSD License: http://www.opensource.org/licenses/bsd-license.php
 
 import re
 from objects.blob import Blob
 from objects.util import mode_str_to_int 
-from exc import GitCommandError
+from exc import GitPyCommandError
 
 from gitdb.util import hex_to_bin
 

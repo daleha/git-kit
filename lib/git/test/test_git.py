@@ -1,27 +1,27 @@
 # test_git.py
 # Copyright (C) 2008, 2009 Michael Trier (mtrier@gmail.com) and contributors
 #
-# This module is part of GitPython and is released under
+# This module is part of GitPyPython and is released under
 # the BSD License: http://www.opensource.org/licenses/bsd-license.php
 
 import os, sys
 from git.test.lib import *
-from git import Git, GitCommandError
+from git import GitPy, GitCommandError
 
-class TestGit(TestCase):
+class TestGitPy(TestCase):
     
     @classmethod
     def setUpAll(cls):
-        cls.git = Git(GIT_REPO)
+        cls.git = GitPy(GIT_REPO)
 
-    @patch_object(Git, 'execute')
+    @patch_object(GitPy, 'execute')
     def test_call_process_calls_execute(self, git):
         git.return_value = ''
         self.git.version()
         assert_true(git.called)
         assert_equal(git.call_args, ((['git', 'version'],), {}))
 
-    @raises(GitCommandError)
+    @raises(GitPyCommandError)
     def test_it_raises_errors(self):
         self.git.this_does_not_exist()
 
@@ -45,7 +45,7 @@ class TestGit(TestCase):
                      self.git.hash_object(istream=fh, stdin=True))
         fh.close()
 
-    @patch_object(Git, 'execute')
+    @patch_object(GitPy, 'execute')
     def test_it_ignores_false_kwargs(self, git):
         # this_should_not_be_ignored=False implies it *should* be ignored
         output = self.git.version(pass_this_kwarg=False)

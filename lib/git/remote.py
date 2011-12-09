@@ -1,12 +1,12 @@
 # remote.py
 # Copyright (C) 2008, 2009 Michael Trier (mtrier@gmail.com) and contributors
 #
-# This module is part of GitPython and is released under
+# This module is part of GitPyPython and is released under
 # the BSD License: http://www.opensource.org/licenses/bsd-license.php
 
 # Module implementing a remote object allowing easy access to git remotes
 
-from exc import GitCommandError
+from exc import GitPyCommandError
 from ConfigParser import NoOptionError
 from config import SectionConstraint
 
@@ -390,7 +390,7 @@ class Remote(LazyMixin, Iterable):
 			
 		:return: New Remote instance
 			
-		:raise GitCommandError: in case an origin with that name already exists"""
+		:raise GitPyCommandError: in case an origin with that name already exists"""
 		repo.git.remote( "add", name, url, **kwargs )
 		return cls(repo, name)
 	
@@ -459,7 +459,7 @@ class Remote(LazyMixin, Iterable):
 		"""Wait for the process (fetch, pull or push) and handle its errors accordingly"""
 		try:
 			proc.wait()
-		except GitCommandError,e:
+		except GitPyCommandError,e:
 			# if a push has rejected items, the command has non-zero return status
 			# a return status of 128 indicates a connection error - reraise the previous one
 			if proc.poll() == 128:
@@ -484,7 +484,7 @@ class Remote(LazyMixin, Iterable):
 				print >> sys.stderr, line
 				continue
 			elif line.startswith('fatal:'):
-				raise GitCommandError(("Error when fetching: %s" % line,), 2)
+				raise GitPyCommandError(("Error when fetching: %s" % line,), 2)
 			# END handle special messages
 			fetch_info_lines.append(line)
 		# END for each line
@@ -585,14 +585,14 @@ class Remote(LazyMixin, Iterable):
 	def config_reader(self):
 		"""
 		:return:
-			GitConfigParser compatible object able to read options for only our remote.
+			GitPyConfigParser compatible object able to read options for only our remote.
 			Hence you may simple type config.get("pushurl") to obtain the information"""
 		return self._config_reader
 	
 	@property
 	def config_writer(self):
 		"""
-		:return: GitConfigParser compatible object able to write options for this remote.
+		:return: GitPyConfigParser compatible object able to write options for this remote.
 		:note:
 			You can only own one writer at a time - delete it to release the 
 			configuration file and make it useable by others.

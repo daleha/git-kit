@@ -1,7 +1,7 @@
 # test_remote.py
 # Copyright (C) 2008, 2009 Michael Trier (mtrier@gmail.com) and contributors
 #
-# This module is part of GitPython and is released under
+# This module is part of GitPyPython and is released under
 # the BSD License: http://www.opensource.org/licenses/bsd-license.php
 
 from git.test.lib import *
@@ -267,7 +267,7 @@ class TestRemote(TestBase):
         
         # push without spec should fail ( without further configuration )
         # well, works nicely
-        # self.failUnlessRaises(GitCommandError, remote.push)
+        # self.failUnlessRaises(GitPyCommandError, remote.push)
         
         # simple file push
         self._commit_random_file(rw_repo)
@@ -431,7 +431,7 @@ class TestRemote(TestBase):
         assert remote in bare_rw_repo.remotes
         
         # create same one again
-        self.failUnlessRaises(GitCommandError, Remote.create, bare_rw_repo, *arg_list)
+        self.failUnlessRaises(GitPyCommandError, Remote.create, bare_rw_repo, *arg_list)
         
         Remote.remove(bare_rw_repo, new_name)
         
