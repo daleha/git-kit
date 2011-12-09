@@ -1,0 +1,9 @@
+********************Bootstrapping completed:********************
+>>Got request: 
+Object key 
+	request:
+has value:
+	['sync', 'Fixed standalone module error']
+>>Loading repo configurations
+>>GK command took 0.0022039492925 minutes.
+>>Shut down normally

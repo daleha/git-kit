@@ -4,10 +4,10 @@ import os,fnmatch
 import debug
 
 #3rd party includes
-from git import Git
-from git import Repo
-from git import Remote
-from git.exc import GitCommandError
+from pygit import GitPy
+from pygit import Repo
+from pygit import Remote
+from pygit.exc import GitPyCommandError
 
 
 from gkconfig import *
@@ -154,7 +154,7 @@ class GKRepo(Repo):
 		try:
 
 			self._native_exec(cmd)
-		except GitCommandError:
+		except GitPyCommandError:
 #			debug.warn("filePath could not be removed - this means it is either ignored, or untracked by git")
 			self._native_exec("rm -rf "+filePath)
 	
@@ -209,7 +209,7 @@ class GKRepo(Repo):
 
 		try:
 			self._native_exec(cmd)
-		except GitCommandError:
+		except GitPyCommandError:
 			debug.warn("There was nothing to do")
 
 
