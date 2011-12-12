@@ -3,7 +3,12 @@
 Object key 
 	request:
 has value:
-	['sync', 'Fixed standalone module error']
+	['help']
 >>Loading repo configurations
->>GK command took 0.0022039492925 minutes.
+>>Available actions:
+Object key 
+	actions:
+has value:
+	('help', 'sync', 'userconf', 'ignore', '_handhold')
+>>GK command took 0.00781666835149 minutes.
 >>Shut down normally
