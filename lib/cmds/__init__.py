@@ -12,9 +12,9 @@ Please put all global namespace imports at the bottom of the file.
 Run setup on a repository to start using it with gitkit, and configure various settings
 """
 def gitConfigSetup(repos):
-	from setup import setup_gitconfig
+	from setup import setup_repos
 
-	setup_gitconfig(repo)
+	setup_repos()
 
 
 def safeUpdate(repos,args):#todo: use args to selectively update/sync
@@ -50,8 +50,10 @@ def ignoreExpression(repo,args):
 Provide a list of high level opis to the user
 """	
 def _handHold(repos,**kwargs):
+	print "Handholding"
 	global METHODS
-	handhold=prompt_user("No arguments eh? Want some help?")
+	handhold=prompt_user("No arguments eh? Want some help?",default="Y")
+
 	if(not handhold):
 		return
 	choice=prompt_user("Enter choice from: ",isbool=False,opts=METHODS)
@@ -62,9 +64,9 @@ def _handHold(repos,**kwargs):
 	else:
 		args=None
 	if(args==None):
-		choiceFunc(repo)
+		choiceFunc(repos)
 	else:
-		choiceFunc(repo,args)
+		choiceFunc(repos,args)
 #actuall add more handhold,including arguments for each func
 	
 

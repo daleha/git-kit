@@ -20,7 +20,7 @@ def sm_name(section):
 	
 def mkhead(repo, path):
 	""":return: New branch/head instance"""
-	return pygit.Head(repo, git.Head.to_full_path(path))
+	return pygit.Head(repo, pygit.Head.to_full_path(path))
 	
 def unbare_repo(func):
 	"""Methods with this decorator raise InvalidGitPyRepositoryError if they 

@@ -80,11 +80,16 @@ class GKRepoConfig:
 	def getRemoteConfigs(self):
 		return self.remotecfgs
 
-	def __init__(self):#scaffolding
+	def __init__(self,reponame="genericrepo",repopath=os.getcwd(),cachemeta=True):#scaffolding
 		import os
-		self.reponame="git-kit"
-		self.repopath=os.getcwd()
-		self.cachemeta=True
+		self.reponame=reponame
+		if(os.path.exists(repopath)):
+			self.repopath=repopath
+		else:
+			debug.warn("The path specified "+repopath+ " does not exist")
+			self.repopath=""
+			
+		self.cachemeta=cachemeta
 
 		self.branchcfgs	=dict()	
 		self.remotecfgs	=dict()	

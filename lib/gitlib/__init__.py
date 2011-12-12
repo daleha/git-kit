@@ -15,7 +15,11 @@ from gkconfig import *
 def getRepos():
 	repos=list()
 	for repocfg in getRepoConfigs():
-		repos.append(GKRepo(repocfg))
+		if(os.path.exists(repocfg.repopath)):
+			
+			repos.append(GKRepo(repocfg))
+		else:
+			debug.warn("Path "+repocfg.repopath+" does not exist, repo not being created")
 
 #	repoconf=GKRepoConfig()
 #	repos.append(GKRepo(repoconf))
@@ -232,8 +236,8 @@ class GKRepo(Repo):
 	Used to provide a means of synching a single branch in the repo
 	"""
 	def syncAll(self,**kwargs):
-		debug.log("Updating submodules")
-		self.submodule_update()
+		debug.log("FIXME, *NOT* Updating submodules")
+	#	self.submodule_update()
 		for each in self.submodules:
 			subrepo=GKRepo(submodule=each,parent=self)
 			debug.log("Syncing submodule "+subrepo.name)
@@ -393,6 +397,10 @@ class GKRemote:
 
 	def isWriteable(self):
 		return self.writeable
+
+	def setWriteable(self,writeable):
+		debug.log("Setting writeable to "+str(writeable))
+		self.writeable=writeable
 
 	def pullRebase(self,branch):
 			debug.log("Rebasing changes from remote "+self.name+" onto "+branch.name)

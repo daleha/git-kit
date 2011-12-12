@@ -56,12 +56,13 @@ def main(request):
 			cmds.ignoreExpression(repos,args)
 		elif(action=="help"):
 			printHelp()
-		elif(action=="_handhold"):
-			cmds._handHold(repos)		
 		else:
 			cmds._handHold(repos)		
+	else:
+		cmds._handHold(repos)		
 
 	import gkconfig
+	repos=getRepos()
 	for repo in repos:
 		debug.log("Writing config for repo:"+repo.name)
 		gkconfig.writeRepoToJson(repo)
