@@ -16,14 +16,25 @@ Git-Kit is not a replacement for Git. It is importanty to know how a tool works 
 1. Add the folder you just cloned to $PATH variable
 1. Make sure you have python 2.6 installed (untested on python 3, but expect it would explode -plans to integrate with dulwich API and ship with a (java,jython,jsch) stack for OOB support for any platform with java.
 
-To update gitkit, simply run "git-kit update"
+<!-- To update gitkit, simply run "git-kit update" (unimplemented) -->
 
-## The Workflow
+## Implemented API
+
+* "gk ": When ran with no argument, gk begins an interactive help (handhold mode)
+* "gk sync [message]". Default message is "incremental commit". You can run this on a crontab to constantly sync.
+* "gk ignore PATTERN". Ignores a pattern suitable for consumption with libfnmatch
+* "gk configure". Launches repo configuration, writes results to json.
+
+The commands currently implemented run directly from the lib/cmds/__init__.py module.
+
+
+
+## Future Workflow / Features
 
 Git-kit aims to implement the following APIs:
 
 * Git-kit sync [branch(es)["message"]]
-Git-kit sync with no arguments will sync everything. Git kit sync with a branch arguemet will sync the current branch with the target branch. Git-kit sync with two or more arguments will sync all of the selected branches, (note, to sync with the current branch when supplying two or more branches, you must explicitely include the current branch as an argument - it is no longer implicite).
+Git-kit sync with no arguments will sync everything. Git kit sync with a branch arguemet will sync the current branch with the target branch. Git-kit sync with two or more arguments will sync all of the selected branches, (note, to sync with the current branch when supplying two or more branches, you must explicitely include the current branch as an argument - it is no longer implicite). When a sync occurs, the commit history will be auto-squashed to replace all incremental commits with one big commit.
 
 * Git-kit create [branch|commit|tag]
 Branches will be created as tracking branches by default, so that all stable code is auto-promoted to them. Creating a commit is a wrapper for the command 'git add REPOROOT &amp&amp git commit -a -m "YOUR_MESSAGE"'
@@ -42,7 +53,9 @@ Before you add a rule, git-kit ignore will prompt you with a list of files match
 * Git-kit publish [branch|commit|tag|REF]
 Git-kit publish is a macro to build a selected branch, or REF, and put the result on a selected server. This information will be stored in git-kit's git-publish file. It requires a target host, and file as arguments, and just wraps scp. In order to build the target, the shell commands to run the build are required. It will require userauth to transfer the file.
 
-## Features:
+
+
+## Wishlist Features:
 
 * Git kit will include the "footprints" feature. each time a change is made (branch is switched,etc) this change is versioned within git kit. In other words, git-kit keeps track of your git state to let you rewind (an undo/redo stack). 
 
@@ -59,17 +72,23 @@ Git-kit wraps up the following standard git-workflow:
 
 Or, more specifically:
 
-1.git commit -a -m "temporary commit"
-1.git branch -D tempbranch
-1.git checkout -b tempbranch
-1.git checkout (original branch/commit)
-1.git reset HEAD^
-1.stash push
-1.Pull --rebase
-1.stash pop
-1.add ROOT
-1.commit -a -m "incremental commit"
-1.git push
-1.git push --tags
+1. git commit -a -m "temporary commit"
+1. git branch -D tempbranch
+1. git checkout -b tempbranch
+1. git checkout (original branch/commit)
+1. git reset HEAD^
+1. stash push
+1. Pull --rebase
+1. stash pop
+1. add ROOT
+1. commit -a -m "incremental commit"
+1. git push
+1. git push --tags
 
-Running git-kit on a chron-job creates an efficient and reliable backup system.
+Gitkit serves as a wrapper for storing repository configuration. It is tailored to simplify submodules, and to allow for easy adaption of a large set of projects, that may not be related, but still required (a number of projects from the same organization - an entire "workspace"). 
+
+Gitkit stores repository configurations in the gitkit.cfg file. This is a json file, is it can be safely editted directly (just make sure that you obey [json syntax][1]). All metadata about a repository can be stored here. Including, whether to store filesytem metadata, which remotes are writeable, and eventually which hooks (if any) to run on a repo (by default, all in the .hooks directory inside a repo will be executed).
+
+## Feature requests /Bugs
+
+Please submit all features requests/bugs to hameld@cc.umanitoba.ca
