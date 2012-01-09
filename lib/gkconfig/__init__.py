@@ -5,6 +5,21 @@ import debug
 global CONFIGPATH
 CONFIGPATH="gitkit.cfg"
 
+
+class GKWorkspaceConfig:
+
+	def __init__(self):
+		pass
+		
+	def readConfigFromJson(self,name,jsondata):
+		import json
+
+		self.name=name
+		self.writeable=jsondata[name]["writeable"]
+
+
+
+
 class GKRemoteConfig:
 	def __init__(self):
 		self.writeable=False
@@ -137,6 +152,19 @@ class GKRepoConfig:
 Public APIS:
 	
 """
+
+def writeWorkspaceToRepo():
+	pass
+
+def getWorkspaceConfig():	
+	jsondata=_parseConfigToDict()
+
+	workspaceConfigs = list()	
+
+	for each in jsondata["workspaces"]:
+		workspaceConfigs.append(_getWorkspaceConfig(each,jsondata[each])
+
+
 def writeRepoToJson(repo):
 	repoconf=GKRepoConfig()
 	repoconf.readConfigFromRepo(repo)

@@ -72,7 +72,7 @@ def create_repo(rootPath):
 	gkconfig.writeRepoToJson(repo)	
 	
 
-def setup_repos(opts=list()):
+def setup_workspaces(opts=list()):
 
 	if (len(opts)>=0):
 		for each in opts:

@@ -13,7 +13,9 @@ Run setup on a repository to start using it with gitkit, and configure various s
 """
 def gitConfigSetup(repos):
 	from setup import setup_repos
+	from setup import setup_workspaces
 
+	setup_workspaces()
 	setup_repos()
 
 
