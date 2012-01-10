@@ -1,9 +1,12 @@
-import os
+import os,sys
 import debug
+
+pathname = os.path.dirname(sys.argv[0])        
+basepath= os.path.abspath(pathname)
 
 
 global CONFIGPATH
-CONFIGPATH="gitkit.cfg"
+CONFIGPATH= os.path.join(basepath,"gitkit.cfg")
 
 class GKRemoteConfig:
 	def __init__(self):
